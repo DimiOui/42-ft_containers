@@ -26,7 +26,7 @@ namespace ft
 		//	MEMBER FUNCTIONS
 		//	default constructor
 		explicit vector(const allocator_type &alloc = allocator_type()) : _data(NULL),
-																		  _capacity(0), _size(0), _alloc(alloc) {}
+						  _capacity(0), _size(0), _alloc(alloc) {}
 
 		//	fill constructor
 		explicit vector(size_type n, const_reference val = value_type(),

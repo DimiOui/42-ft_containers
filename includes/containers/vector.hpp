@@ -1,3 +1,6 @@
+#ifndef VECTOR_HPP
+# define VECTOR_HPP
+
 #pragma once
 
 #include <iostream>
@@ -103,7 +106,7 @@ namespace ft
 		allocator_type get_allocator() const {}
 
 	private:
-		pointer _content;
+		pointer _data;
 		Allocator _alloc;
 		size_type _capacity;
 		size_type _size;
@@ -126,3 +129,5 @@ namespace ft
 	void swap(vector<T, Alloc> &lhs, vector<T, Alloc> &rhs) {}
 }
 //	https://legacy.cplusplus.com/reference/vector/vector/
+
+#endif

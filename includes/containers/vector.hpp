@@ -27,26 +27,20 @@ namespace ft
 		typedef const_reverse_iterator;
 
 		//	MEMBER FUNCTIONS
-		//	default constructor
 		explicit vector(const allocator_type &alloc = allocator_type()) : _data(NULL),
 						  _capacity(0), _size(0), _alloc(alloc) {}
 
-		//	fill constructor
 		explicit vector(size_type n, const_reference val = value_type(),
 						const allocator_type &alloc = allocator_type()) {}
 
-		//	range constructor
 		template <class InputIterator>
 		vector(InputIterator first, InputIterator last,
 			   const allocator_type &alloc = allocator_type()) {}
 
-		//	copy constructor
 		vector(const vector &x) {}
 
-		//	destructor
 		~vector() {}
 
-		//	copy
 		vector &operator=(const vector &x) {}
 
 		//	ITERATORS
@@ -79,21 +73,16 @@ namespace ft
 
 		//	MODIFIERS
 		template <class InputIterator>
-		//	range assign
 		void assign(InputIterator first, InputIterator last)
 		{
 		}
-		//	fill assign
 		void assign(size_type n, const_reference val) {}
 
 		void push_back(const_reference val) {}
 		void pop_back() {}
 
-		//	single element insert
 		iterator insert(iterator position, const_reference val) {}
-		//	fill insert
 		void insert(iterator position, size_type n, const_reference val) {}
-		//	range insert
 		template <class InputIterator>
 		void insert(iterator position, InputIterator first, InputIterator last) {}
 

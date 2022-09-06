@@ -106,20 +106,22 @@ namespace ft
 
 		void resize(size_type n, value_type val = value_type())
 		{
-			while (_size < n)
+			// NEEDS SOME TESTING
+			while (n < _size)
 				this->pop_back();
-			if (n <= _size * 2 && n > _capacity)
-				_capacity.reserve(size * 2);
-			else if (n > _capacity)
-				_capacity.reserve(n);
-			while (n != _size)
-				push_back(val);
+			if (n > _size)
+			{
+				if (n > _capacity)
+					this->reserve(n);
+				while (n > _size)
+					this->push_back(val);
+			}
 		}
 
 		void reserve(size_type n)
 		{
 			if (n > this->max_size())
-				throw std::length_error("vector::reserve");
+				throw std::length_error("length_error: vector::reserve");
 			if (_capacity < n && n != 0)
 			{
 				pointer tmp = _alloc.allocate(n);

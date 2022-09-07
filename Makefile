@@ -12,7 +12,7 @@ SRCS		=	srcs/main.cpp
 
 OBJS		= $(SRCS:.cpp=.o)
 
-INC			= includes/containers/vector.hpp includes/iterators/iterator_traits.hpp includes/iterators/reverse_iterator.hpp includes/utils/enable_if.hpp includes/utils/equal.hpp includes/utils/is_integral.hpp includes/utils/lexicographical_compare.hpp includes/utils/pair.hpp
+INC			= includes/vector.hpp includes/iterator_traits.hpp includes/reverse_iterator.hpp includes/enable_if.hpp includes/equal.hpp includes/is_integral.hpp includes/lexicographical_compare.hpp includes/pair.hpp
 
 NAME		= ft_containers
 
@@ -20,7 +20,7 @@ RM			= rm -f
 
 CC			= c++
 
-CFLAGS		=   -std=c++98 -Wall -Wextra -Werror -Iincludes
+CFLAGS		=   -std=c++98 -Wall -Wextra -Werror -Iincludes -g3
 
 %.o : %.cpp
 			$(call compiling,$<,$(<:.cpp=.o),0)

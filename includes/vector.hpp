@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "vector_iterator.hpp"
 #include "reverse_iterator.hpp"
 #include "enable_if.hpp"
 #include "reverse_iterator.hpp"
@@ -12,7 +13,7 @@
 
 namespace ft
 {
-	template <class Type, class Allocator = std::allocator<Type>>
+	template <class Type, class Allocator = std::allocator<Type> >
 	class vector
 	{
 		//	MEMBER TYPES
@@ -25,11 +26,10 @@ namespace ft
 		typedef const value_type &const_reference;
 		typedef value_type *pointer;
 		typedef const value_type *const_pointer;
-		// need to include the iterators that i need to do
-		typedef iterator;
-		typedef const_iterator;
-		typedef reverse_iterator;
-		typedef const_reverse_iterator;
+		typedef vector_iterator<value_type> iterator;
+		typedef vector_iterator<const value_type> const_iterator;
+		typedef ft::reverse_iterator<iterator> reverse_iterator;
+		typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
 
 		//	MEMBER FUNCTIONS
 		explicit vector(const allocator_type &alloc = allocator_type()) :
@@ -106,7 +106,7 @@ namespace ft
 
 		void resize(size_type n, value_type val = value_type())
 		{
-			// NEEDS SOME TESTING
+			// Not sure about this one either
 			while (n < _size)
 				this->pop_back();
 			if (n > _size)
@@ -138,11 +138,11 @@ namespace ft
 
 		//	ELEMENT ACCESS
 		reference operator[](size_type n) {return (_data[n]);}
-		const_reference operator[](size_type n) const {return (data[n]);}
+		const_reference operator[](size_type n) const {return (_data[n]);}
 		reference front() {return (_data);}
 		const_reference front() const {return (_data);}
 		reference back() {return (_data[_size - 1]);}
-		const_reference back() const {return (data[_size - 1]);}
+		const_reference back() const {return (_data[_size - 1]);}
 
 		reference at(size_type n)
 		{
@@ -162,9 +162,26 @@ namespace ft
 		template <class InputIterator>
 		void assign(InputIterator first, InputIterator last) {}
 		void assign(size_type n, const_reference val) {}
-
-		void push_back(const_reference val) {}
-		void pop_back() {}
+		void push_back(const_reference val)
+		{
+			if (_capacity < _size + 1)
+			{
+				if (_size == 0)
+					this->reserve(1);
+				else
+					this->reserve(_size * 2);
+			}
+			_alloc.construct(&_data[_size], val);
+			_size++;
+		}
+		void pop_back()
+		{
+			if (!empty())
+			{
+				_alloc.destroy(&_data[_size - 1]);
+				_size--;
+			}
+		}
 
 		iterator insert(iterator position, const_reference val) {}
 		void insert(iterator position, size_type n, const_reference val) {}
@@ -181,9 +198,9 @@ namespace ft
 
 	private:
 		pointer _data;
-		allocator_type _alloc;
 		size_type _capacity;
 		size_type _size;
+		allocator_type _alloc;
 	};
 
 	//	NON-MEMBER FUNCTIONS
@@ -216,7 +233,7 @@ namespace ft
 	template <class T, class Alloc>
 	bool operator>(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
 	{
-		return (rhs < lhsl);
+		return (rhs < lhs);
 	}
 
 	template <class T, class Alloc>
@@ -228,7 +245,7 @@ namespace ft
 	template <class T, class Alloc>
 	void swap(vector<T, Alloc> &lhs, vector<T, Alloc> &rhs)
 	{
-		x.swap(y);
+		lhs.swap(rhs);
 	}
 }
 //	https://legacy.cplusplus.com/reference/vector/vector/

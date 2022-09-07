@@ -2,10 +2,11 @@
 # define ITERATOR_TRAITS_HPP
 
 //	Iterator_traits defines the properties of iterators, any custom class with
-//	ft::iterator will inherits from iterator_traits
+//	"ft::iterator" will inherits from iterator_traits
 
 #pragma once
 
+#include <cstddef>
 #include <iterator>
 
 namespace ft

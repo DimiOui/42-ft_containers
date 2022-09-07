@@ -25,56 +25,48 @@ namespace ft
 			vector_iterator(const vector_iterator &ptr) {_iptr.get_pointer();}
 			~vector_iterator() {}
 
-			//operator vector_iterator<const T>(void) const
-			//{
-			//return vector_iterator<const T>(this->_iptr);
-			//}
 			reference			operator*() const {return (*_iptr);}
 			vector_iterator		operator+ (difference_type n) const {return vector_iterator(_iptr + n);}
-
-			//friend vector_iterator	operator+ (std::ptrdiff_t n, vector_iterator it)
-			//{
-			//	vector_iterator temp(it.get_pointer());
-			//	temp += n;
-			//	return (temp);
-			//}
 			vector_iterator		&operator++()
 			{
 				++_iptr;
 				return (*this);
 			}
+
 			vector_iterator		operator++(int)
 			{
 				vector_iterator	temp = *this;
 				(*this)++;
 				return (temp);
 			}
+
 			vector_iterator		&operator+= (difference_type n)
 			{
 				_iptr += n;
 				return (*this);
 			}
+
 			vector_iterator		operator- (difference_type n) const {return vector_iterator(_iptr - n);}
-			//int					operator- (vector_iterator<const T> const &other) const
-			//{
-			//	return _iptr - other.get_pointer();
-			//}
+
 			vector_iterator&	operator--()
 			{
 				--_iptr;
 				return (*this);
 			}
+
 			vector_iterator		operator--(int)
 			{
 				vector_iterator	temp = *this;
 				(*this)--;
 				return (temp);
 			}
+
 			vector_iterator		operator-= (difference_type n)
 			{
 				_iptr -= n;
 				return (*this);
 			}
+			
 			pointer				operator->() const {return (_iptr);}
 			reference			operator[] (difference_type n) const {return (_iptr[n]);}
 

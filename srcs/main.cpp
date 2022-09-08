@@ -1,9 +1,11 @@
 #include <iostream>
 #include <string>
+#include <sys/time.h>
+#include <iomanip>
 
-#if 0 // STL EXAMPLE
+#if 1 // STL EXAMPLE
 #include <vector>
-    namespace ft = std;
+namespace ft = std;
 #else
 #include "vector.hpp"
 #endif
@@ -17,14 +19,25 @@
 #define KCYN "\x1B[36m"
 #define KWHT "\x1B[37m"
 
+void print_test_time(const struct timeval &start)
+{
+  struct timeval end;
+  gettimeofday(&end, NULL);
+  std::cout << KBLU "Time spent : ";
+  std::cout << (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_usec - start.tv_usec) << " units" << KNRM << std::endl;
+}
+
 int main()
 {
+  struct timeval start_time;
+
   ///////////////////////////////////**VECTOR**///////////////////////////////////
   std::cout << KYEL "///////////////////////////////////**VECTOR**";
   std::cout << "///////////////////////////////////" KWHT << std::endl;
   std::cout << std::endl;
   //  CONSTRUCTING VECTORS FT
   {
+    gettimeofday(&start_time, NULL);
     std::cout << KYEL "CONSTRUCTOR TESTS..." KWHT << std::endl;
     // The contents of fifth are: 16 2 77 29
     ft::vector<int> first;                               // empty vector of ints
@@ -39,6 +52,7 @@ int main()
     for (ft::vector<int>::iterator it = fifth.begin(); it != fifth.end(); ++it)
       std::cout << ' ' << *it;
     std::cout << '\n';
+    print_test_time(start_time);
   }
   std::cout << std::endl;
   /////////////////////////////////////////////////////////////////////////////////
@@ -53,6 +67,7 @@ int main()
 
     std::cout << "Size of foo: " << int(foo.size()) << '\n';
     std::cout << "Size of bar: " << int(bar.size()) << '\n';
+    print_test_time(start_time);
   }
   std::cout << std::endl;
   /////////////////////////////////////////////////////////////////////////////////
@@ -67,7 +82,9 @@ int main()
     for (ft::vector<int>::iterator it = myvector.begin(); it != myvector.end(); ++it)
       std::cout << ' ' << *it;
     std::cout << '\n';
+    print_test_time(start_time);
   }
+  std::cout << std::endl;
   // BEGIN REVERSE ITERATOR TEST
   {
     std::cout << KYEL "BEGIN REVERSE ITERATOR TESTS..." KWHT << std::endl;
@@ -83,6 +100,7 @@ int main()
     for (ft::vector<int>::iterator it = myvector.begin(); it != myvector.end(); ++it)
       std::cout << ' ' << *it;
     std::cout << '\n';
+    print_test_time(start_time);
   }
   std::cout << std::endl;
   /////////////////////////////////////////////////////////////////////////////////
@@ -97,7 +115,9 @@ int main()
     for (ft::vector<int>::iterator it = myvector.begin(); it != myvector.end(); ++it)
       std::cout << ' ' << *it;
     std::cout << '\n';
+    print_test_time(start_time);
   }
+  std::cout << std::endl;
   // END REVERSE ITERATOR TEST
   {
     std::cout << KYEL "END REVERSE ITERATOR TESTS..." KWHT << std::endl;
@@ -113,6 +133,7 @@ int main()
     for (ft::vector<int>::iterator it = myvector.begin(); it != myvector.end(); ++it)
       std::cout << ' ' << *it;
     std::cout << '\n';
+    print_test_time(start_time);
   }
   std::cout << std::endl;
   /////////////////////////////////////////////////////////////////////////////////
@@ -131,6 +152,7 @@ int main()
 
     myints.pop_back();
     std::cout << "3. size: " << myints.size() << '\n';
+    print_test_time(start_time);
   }
   std::cout << std::endl;
   /////////////////////////////////////////////////////////////////////////////////
@@ -146,6 +168,7 @@ int main()
     std::cout << "size: " << myvector.size() << "\n";
     std::cout << "capacity: " << myvector.capacity() << "\n";
     std::cout << "max_size: " << myvector.max_size() << "\n";
+    print_test_time(start_time);
   }
   std::cout << std::endl;
   /////////////////////////////////////////////////////////////////////////////////
@@ -166,6 +189,7 @@ int main()
     for (int i = 0; i < static_cast<int>(myvector.size()); i++)
       std::cout << ' ' << myvector[i];
     std::cout << '\n';
+    print_test_time(start_time);
   }
   std::cout << std::endl;
   /////////////////////////////////////////////////////////////////////////////////
@@ -181,6 +205,7 @@ int main()
     std::cout << "size: " << (int)myvector.size() << '\n';
     std::cout << "capacity: " << (int)myvector.capacity() << '\n';
     std::cout << "max_size: " << (int)myvector.max_size() << '\n';
+    print_test_time(start_time);
   }
   std::cout << std::endl;
   /////////////////////////////////////////////////////////////////////////////////
@@ -199,6 +224,7 @@ int main()
       myvector.pop_back();
     }
     std::cout << "total: " << sum << '\n';
+    print_test_time(start_time);
   }
   std::cout << std::endl;
   /////////////////////////////////////////////////////////////////////////////////
@@ -233,6 +259,7 @@ int main()
         std::cout << "capacity changed: " << sz << '\n';
       }
     }
+    print_test_time(start_time);
   }
   std::cout << std::endl;
   /////////////////////////////////////////////////////////////////////////////////
@@ -261,6 +288,7 @@ int main()
     for (unsigned i = 0; i < sz; i++)
       std::cout << ' ' << myvector[i];
     std::cout << '\n';
+    print_test_time(start_time);
   }
   std::cout << std::endl;
   /////////////////////////////////////////////////////////////////////////////////
@@ -277,6 +305,7 @@ int main()
     for (unsigned i = 0; i < myvector.size(); i++)
       std::cout << ' ' << myvector.at(i);
     std::cout << '\n';
+    print_test_time(start_time);
   }
   std::cout << std::endl;
   /////////////////////////////////////////////////////////////////////////////////
@@ -293,6 +322,7 @@ int main()
     myvector.front() -= myvector.back();
 
     std::cout << "myvector.front() is now " << myvector.front() << '\n';
+    print_test_time(start_time);
   }
   std::cout << std::endl;
   /////////////////////////////////////////////////////////////////////////////////
@@ -312,6 +342,7 @@ int main()
     for (unsigned i = 0; i < myvector.size(); i++)
       std::cout << ' ' << myvector[i];
     std::cout << '\n';
+    print_test_time(start_time);
   }
   std::cout << std::endl;
   /////////////////////////////////////////////////////////////////////////////////
@@ -335,6 +366,7 @@ int main()
     std::cout << "Size of first: " << int(first.size()) << '\n';
     std::cout << "Size of second: " << int(second.size()) << '\n';
     std::cout << "Size of third: " << int(third.size()) << '\n';
+    print_test_time(start_time);
   }
   std::cout << std::endl;
   /////////////////////////////////////////////////////////////////////////////////
@@ -361,6 +393,7 @@ int main()
     for (it = myvector.begin(); it < myvector.end(); it++)
       std::cout << ' ' << *it;
     std::cout << '\n';
+    print_test_time(start_time);
   }
   std::cout << std::endl;
   /////////////////////////////////////////////////////////////////////////////////

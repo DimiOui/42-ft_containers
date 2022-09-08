@@ -40,16 +40,17 @@ namespace ft
 
 		explicit vector(size_type n, const_reference val = value_type(),
 						const allocator_type &alloc = allocator_type()) :
-						_data(NULL), _capacity(n), _size(n), _alloc(alloc)
+			_data(NULL), _capacity(n), _size(n), _alloc(alloc)
 		{
 			//	Constructs a container with n elements. Each element is a copy of val.
-			_data = _data.allocate(n);
+			_data = _alloc.allocate(n);
 			for (size_type i = 0; i<n; i++)
 				_alloc.construct(&_data[i], val);
 		}
 
 		template <class InputIterator>
-		vector(InputIterator first, InputIterator last,
+		vector(typename ft::enable_if<!ft::is_integral<InputIterator>::value,
+				InputIterator>::type first, InputIterator last,
 				const allocator_type &alloc = allocator_type()) :
 				_data(NULL), _capacity(0), _size(0), _alloc(alloc)
 		{
@@ -142,7 +143,7 @@ namespace ft
 		//	ELEMENT ACCESS
 		reference operator[](size_type n) {return (_data[n]);}
 		const_reference operator[](size_type n) const {return (_data[n]);}
-		reference front() {return (_data);}
+		reference front() {return (_data[0]);}
 		const_reference front() const {return (_data);}
 		reference back() {return (_data[_size - 1]);}
 		const_reference back() const {return (_data[_size - 1]);}
@@ -219,16 +220,30 @@ namespace ft
 				}
 				return (iterator(_data + insert_pos));
 			}
+			this->push_back(val);
 			return (end() - 1);
+			//size_type	i = 0;
+			//iterator	it = begin();
+
+			//while (it + i != position && i < _capacity)
+			//	i++;
+			//if (_size < _capacity + 1)
+			//	reserve(_capacity + 1);
+			//size_type j = _capacity - 1;
+			//while (j > i)
+			//{
+			//	_data[j] = _data[j - 1];
+			//	j--;
+			//}
+			//_data[i] = val;
+			//_capacity++;
+			//return (iterator(&_data[i]));
 		}
 
 		void insert(iterator position, size_type n, const_reference val)
 		{
-			while (n)
-			{
+			while (n--)
 				position = insert(position, val);
-				n--;
-			}
 		}
 
 		template <class InputIterator>
@@ -236,11 +251,18 @@ namespace ft
 					!ft::is_integral<InputIterator>::value,
 					InputIterator>::type first, InputIterator last)
 		{
-			for (InputIterator it = first; it != last; it++)
-				position = insert(position, *it) + 1;
+			for (; first != last; ++first)
+				position = insert(position, *first) + 1;
 		}
 
-		iterator erase(iterator position) {}
+		iterator erase(iterator position)
+		{
+			//size_type	erase_pos = 0;
+
+			if (position == this->end())
+				this->pop_back();
+			return (position - 1);
+		}
 		iterator erase(iterator first, iterator last) {}
 		void swap(vector &x) {}
 		void clear() {}

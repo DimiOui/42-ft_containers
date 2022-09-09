@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <algorithm>
 #include "vector_iterator.hpp"
 #include "reverse_iterator.hpp"
 #include "enable_if.hpp"
@@ -55,16 +56,30 @@ namespace ft
 				_data(NULL), _capacity(0), _size(0), _alloc(alloc)
 		{
 			//	Constructs a container with as many elements as the range (first,last)
-			this->assign(first, last);
+			try
+			{
+				this->assign(first, last);
+			}
+			catch(const std::exception& e)
+			{
+				std::cerr << e.what() << '\n';
+			}
 		}
 
 		vector(const vector &x) :
 				_data(NULL), _capacity(x._size), _size(x._size), _alloc(x._alloc)
 		{
 			//	Constructs a container with a copy of each of the elements in x, in the same order.
-			_data = _alloc.allocate(x._size);
-			for (size_t i = 0; i<_size; i++)
-				_alloc.construct(&_data[i], x._data[i]);
+			try
+			{
+				_data = _alloc.allocate(x._size);
+				for (size_t i = 0; i<_size; i++)
+					_alloc.construct(&_data[i], x._data[i]);
+			}
+			catch(const std::exception& e)
+			{
+				std::cerr << e.what() << '\n';
+			}
 		}
 
 		~vector()
@@ -81,13 +96,20 @@ namespace ft
 			// NOT SURE ABOUT THIS ONE
 			if (this != &x)
 			{
-				this->clear();
-				_alloc.deallocate(_data, _capacity);
-				_capacity = x._capacity;
-				_size = x._size;
-				_data = _alloc.allocate(_capacity);
-				for (size_t i = 0; i<_size; i++)
-					_alloc.construct(&_data[i], x._data[i]);
+				try
+				{
+					this->clear();
+					_alloc.deallocate(_data, _capacity);
+					_capacity = x._capacity;
+					_size = x._size;
+					_data = _alloc.allocate(_capacity);
+					for (size_t i = 0; i<_size; i++)
+						_alloc.construct(&_data[i], x._data[i]);
+				}
+				catch(const std::exception& e)
+				{
+					std::cerr << e.what() << '\n';
+				}
 			}
 			return (*this);
 		}
@@ -116,7 +138,10 @@ namespace ft
 			if (n > _size)
 			{
 				if (n > _capacity)
-					this->reserve(n);
+				try
+				{this->reserve(n);}
+				catch(const std::exception& e)
+				{std::cerr << e.what() << '\n';}
 				while (n > _size)
 					this->push_back(val);
 			}
@@ -129,14 +154,21 @@ namespace ft
 			if (_capacity < n && n != 0)
 			{
 				pointer tmp = _alloc.allocate(n);
-				for (size_type i = 0; i < _size; i++)
+				try
 				{
-					_alloc.construct(&tmp[i], _data[i]);
-					_alloc.destroy(&_data[i]);
+					for (size_type i = 0; i < _size; i++)
+					{
+						_alloc.construct(&tmp[i], _data[i]);
+						_alloc.destroy(&_data[i]);
+					}
+					_alloc.deallocate(_data, _capacity);
+					_capacity = n;
+					_data = tmp;
 				}
-				_alloc.deallocate(_data, _capacity);
-				_capacity = n;
-				_data = tmp;
+				catch(const std::exception& e)
+				{
+					throw std::bad_alloc();
+				}
 			}
 		}
 
@@ -151,14 +183,14 @@ namespace ft
 		reference at(size_type n)
 		{
 			if (n > _size)
-				throw std::out_of_range("'at' vector out of range.");
+				throw std::out_of_range("vector::at");
 			return (_data[n]);
 		}
 
 		const_reference at(size_type n) const
 		{
 			if (n > _size)
-				throw std::out_of_range("'at' vector out of range.");
+				throw std::out_of_range("vector::at const");
 			return (_data[n]);
 		}
 
@@ -169,14 +201,28 @@ namespace ft
 					InputIterator>::type first, InputIterator last)
 		{
 			//Not sure about this one
-			this->clear();
+			try
+			{
+				this->clear();
+			}
+			catch(const std::exception& e)
+			{
+				std::cerr << e.what() << '\n';
+			}
 			for (; first != last; ++first)
 				this->push_back(*first);
 		}
 
 		void assign(size_type n, const_reference val)
 		{
-			this->clear();
+			try
+			{
+				this->clear();
+			}
+			catch(const std::exception& e)
+			{
+				std::cerr << e.what() << '\n';
+			}
 			for (size_type i = 0; i < n; i++)
 				push_back(val);
 		}
@@ -186,19 +232,39 @@ namespace ft
 			if (_capacity < _size + 1)
 			{
 				if (_size == 0)
-					this->reserve(1);
+					try
+					{
+						this->reserve(1);
+					}
+					catch(std::exception& e) {
+						std::cerr << e.what() << '\n';
+					}
 				else
-					this->reserve(_size * 2);
+					try
+					{
+						this->reserve(_size * 2);
+					}
+					catch(std::exception& e) {
+						std::cerr << e.what() << '\n';
+					}
 			}
 			_alloc.construct(&_data[_size], val);
 			_size++;
 		}
+
 		void pop_back()
 		{
 			if (!empty())
 			{
-				_alloc.destroy(&_data[_size - 1]);
-				_size--;
+				try
+				{
+					_alloc.destroy(&_data[_size - 1]);
+					_size--;
+				}
+				catch(const std::exception& e)
+				{
+					throw std::bad_alloc();
+				}
 			}
 		}
 
@@ -211,7 +277,14 @@ namespace ft
 			{
 				for (iterator it = this->begin(); it != position; it++)
 					insert_pos++;
+				try
+				{
 				this->push_back(val);
+				}
+				catch(const std::exception& e)
+				{
+					std::cerr << e.what() << '\n';
+				}
 				for (size_type i = _size - 1; i > insert_pos; i--)
 				{
 					swap = _data[i];
@@ -220,24 +293,15 @@ namespace ft
 				}
 				return (iterator(_data + insert_pos));
 			}
-			this->push_back(val);
+			try
+			{
+				this->push_back(val);
+			}
+			catch(const std::exception& e)
+			{
+				std::cerr << e.what() << '\n';
+			}
 			return (end() - 1);
-			//size_type	i = 0;
-			//iterator	it = begin();
-
-			//while (it + i != position && i < _capacity)
-			//	i++;
-			//if (_size < _capacity + 1)
-			//	reserve(_capacity + 1);
-			//size_type j = _capacity - 1;
-			//while (j > i)
-			//{
-			//	_data[j] = _data[j - 1];
-			//	j--;
-			//}
-			//_data[i] = val;
-			//_capacity++;
-			//return (iterator(&_data[i]));
 		}
 
 		void insert(iterator position, size_type n, const_reference val)
@@ -257,18 +321,74 @@ namespace ft
 
 		iterator erase(iterator position)
 		{
-			//size_type	erase_pos = 0;
+			iterator	temp;
+			size_type	i = 0;
 
-			if (position == this->end())
+			for (iterator it = this->begin(); it < position; it++)
+				i++;
+			if (i < this->_size)
+				temp = position;
+			else
+				temp = this->end();
+			for (iterator it = position + 1; it < this->end(); it++)
+			{
+				_data[i] = _data[i + 1];
+				i++;
+			}
+			try
+			{
 				this->pop_back();
-			return (position - 1);
+			}
+			catch(const std::exception& e)
+			{
+				std::cerr << e.what() << '\n';
+			}
+			return (temp);
 		}
-		iterator erase(iterator first, iterator last) {}
-		void swap(vector &x) {}
-		void clear() {}
+
+		iterator erase(iterator first, iterator last)
+		{
+			size_type	i = 0;
+
+			for (iterator it = first; it != last; it++)
+				i++;
+			while (i)
+			{
+				erase(first);
+				i--;
+			}
+			return (first);
+		}
+
+		void swap(vector &x)
+		{
+			pointer			tmp_data = this->_data;
+			size_type		tmp_size = this->_size;
+			size_type		tmp_capacity = this->_capacity;
+			allocator_type	tmp_alloc = this->_alloc;
+
+			if (this == &x)
+				return;
+			this->_data = x._data;
+			this->_size = x._size;
+			this->_capacity = x._capacity;
+			this->_alloc = x._alloc;
+
+			x._data = tmp_data;
+			x._size = tmp_size;
+			x._capacity = tmp_capacity;
+			x._alloc = tmp_alloc;
+		}
+
+		void clear()
+		{
+			for (size_type i = 0; i < _size; i++)
+				_alloc.destroy(&_data[i]);
+			this->_size = 0;
+		}
 
 		//	ALLOCATOR
-		allocator_type get_allocator() const {}
+		allocator_type get_allocator() const {return (_alloc);}
 
 	private:
 		pointer _data;
@@ -283,7 +403,7 @@ namespace ft
 	{
 		if (lhs.size() != rhs.size())
 			return (false);
-		return (equal(lhs.begin(), lhs.end(), rhs.begin()));
+		return (ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
 	}
 
 	template <class T, class Alloc>
@@ -295,7 +415,7 @@ namespace ft
 	template <class T, class Alloc>
 	bool operator<(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
 	{
-		return (lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end() && lhs != rhs));
+		return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
 	}
 
 	template <class T, class Alloc>

@@ -30,7 +30,6 @@ namespace ft
 				return vector_iterator<const T>(this->_iptr);
 			}
 
-			//value_type			&operator*() const {return (*_iptr);}
 			reference			operator*() const {return (*_iptr);}
 			vector_iterator		operator+ (difference_type n) const {return vector_iterator(_iptr + n);}
 			//vector_iterator		operator+ (difference_type n) const
@@ -94,9 +93,7 @@ namespace ft
 			}
 
 			pointer				operator->() const {return (_iptr);}
-			//value_type			*operator->() const {return (_iptr);}
 			reference			operator[] (difference_type n) const {return (_iptr[n]);}
-			//value_type			&operator[] (difference_type n) const {return (_iptr[n]);}
 
 			vector_iterator		&operator=(const vector_iterator<const T> &x)
 			{

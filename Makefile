@@ -12,7 +12,7 @@ SRCS		=	srcs/main.cpp
 
 OBJS		= $(SRCS:.cpp=.o)
 
-INC			= includes/vector.hpp includes/iterator_traits.hpp includes/reverse_iterator.hpp includes/enable_if.hpp includes/equal.hpp includes/is_integral.hpp includes/lexicographical_compare.hpp includes/pair.hpp
+INC			= includes/vector.hpp includes/iterator_traits.hpp includes/reverse_iterator.hpp includes/enable_if.hpp includes/equal.hpp includes/is_integral.hpp includes/lexicographical_compare.hpp includes/pair.hpp includes/map.hpp includes/map_bst.hpp includes/map_iterator.hpp
 
 NAME		= ft_containers
 

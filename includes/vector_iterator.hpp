@@ -27,7 +27,7 @@ namespace ft
 
 			operator vector_iterator<const T>(void) const
 			{
-				return vector_iterator<const T>(this->_iptr);
+				return (vector_iterator<const T>(this->_iptr));
 			}
 
 			reference			operator*() const {return (*_iptr);}

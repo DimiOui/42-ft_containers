@@ -67,7 +67,7 @@ namespace ft
 		}
 
 		vector(const vector &x) :
-				_data(NULL), _capacity(x._size), _size(x._size), _alloc(x._alloc)
+				_data(NULL), _capacity(x._size), _size(x._size), _alloc(x.get_allocator())
 		{
 			//	Constructs a container with a copy of each of the elements in x, in the same order.
 			try

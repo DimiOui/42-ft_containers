@@ -5,9 +5,11 @@
 
 #if 0 // STL EXAMPLE
 #include <vector>
+#include <map>
 namespace ft = std;
 #else
 #include "vector.hpp"
+#include "map.hpp"
 #endif
 
 #define KNRM "\x1B[0m"
@@ -27,6 +29,18 @@ void print_test_time(const struct timeval &start)
   std::cout << (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_usec - start.tv_usec) << " units" << KNRM << std::endl;
 }
 
+bool fncomp(char lhs, char rhs) { return lhs < rhs; }
+
+struct classcomp
+{
+  bool operator()(const char &lhs, const char &rhs) const
+  {
+    return lhs < rhs;
+  }
+};
+
+// MAIN
+
 int main()
 {
   struct timeval start_time;
@@ -35,7 +49,7 @@ int main()
   std::cout << KYEL "///////////////////////////////////**VECTOR**";
   std::cout << "///////////////////////////////////" KWHT << std::endl;
   std::cout << std::endl;
-  //  CONSTRUCTING VECTORS FT
+  //  CONSTRUCTING VECTORS
   {
     gettimeofday(&start_time, NULL);
     std::cout << KYEL "CONSTRUCTOR TESTS..." KWHT << std::endl;
@@ -535,4 +549,30 @@ int main()
   }
   std::cout << std::endl;
   /////////////////////////////////////////////////////////////////////////////////
+
+  /////////////////////////////////////**MAP**///////////////////////////////////
+  std::cout << KYEL "///////////////////////////////////**MAP**";
+  std::cout << "///////////////////////////////////" KWHT << std::endl;
+  std::cout << std::endl;
+
+  //  CONSTRUCTING MAP
+  {
+    ft::map<char, int> mymap;
+    ft::map<char, int>::iterator it;
+
+    mymap['a'] = 50;
+    mymap['b'] = 100;
+    mymap['c'] = 150;
+    mymap['d'] = 200;
+
+    it = mymap.find('b');
+    if (it != mymap.end())
+      mymap.erase(it);
+
+    // print content:
+    std::cout << "elements in mymap:" << '\n';
+    std::cout << "a => " << mymap.find('a')->second << '\n';
+    std::cout << "c => " << mymap.find('c')->second << '\n';
+    std::cout << "d => " << mymap.find('d')->second << '\n';
+  }
 }

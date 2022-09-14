@@ -4,8 +4,6 @@
 #pragma once
 
 #include "map_iterator.hpp"
-#include "reverse_iterator.hpp"
-#include "pair.hpp"
 #include "map_bst.hpp"
 #include "lexicographical_compare.hpp"
 
@@ -28,7 +26,7 @@ namespace ft
 			typedef typename allocator_type::const_pointer const_pointer;
 			typedef BST_node<value_type> node;
 			typedef map_iterator<node, value_type> iterator; //not done
-			typedef map_iterator<const node, value_type> const_iterator; // not done
+			typedef map_iterator<node, const value_type> const_iterator; // not done
 			typedef ft::reverse_iterator<iterator> reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
 			typedef std::ptrdiff_t difference_type;
@@ -46,9 +44,8 @@ namespace ft
 
 				public:
 					typedef bool result_type;
-					typedef value_type first_arg_type;
-					typedef value_type second_arg_type;
-
+					typedef value_type first_argument_type;
+					typedef value_type second_argument_type;
 					bool operator() (const value_type& x, const value_type& y) const
 					{
 						return (_comp(x.first, y.first));
@@ -77,6 +74,13 @@ namespace ft
 				_root(NULL), _end(NULL), _rend(NULL)
 			{
 				//	Constructs a container with as many elements as the range.
+				_end = _bst_alloc.allocate(1);
+				_bst_alloc.construct(_end, node());
+
+				_rend = _bst_alloc.allocate(1);
+				_bst_alloc.construct(_rend, node());
+				_rend->parent = _end;
+				this->insert(first, last);
 			}
 
 			map(const map& x) : _bst_alloc(std::allocator<node>()), _comp(x.key_comp()),
@@ -105,12 +109,22 @@ namespace ft
 
 			map& operator= (const map& x)
 			{
-				this->clear();
-				_comp = x._comp;
-				_size = 0;
-				_alloc = x._alloc;
-				_bst_alloc = x._bst_alloc;
-				this->insert(x.begin(), x.end());
+				if (this != &x)
+				{
+					try
+					{
+						this->clear();
+						_comp = x._comp;
+						_size = 0;
+						_alloc = x._alloc;
+						_bst_alloc = x._bst_alloc;
+						this->insert(x.begin(), x.end());
+					}
+					catch(const std::exception& e)
+					{
+						std::cerr << e.what() << '\n';
+					}
+				}
 				return (*this);
 			}
 
@@ -125,16 +139,15 @@ namespace ft
 			const_reverse_iterator rend() const {return (const_reverse_iterator(_rend->parent));}
 
 			//	CAPACITY
-			bool empty() const
-			{if (_size == 0) return true; else return false;}
-
+			bool empty() const {if (_size == 0) return true; else return false;}
 			size_type size() const {return (_size);}
 			size_type max_size() const {return (_alloc.max_size());}
 
 			//	ELEMENT ACCESS
 			mapped_type& operator[] (const key_type& k)
 			{
-				return (*(this->insert(value_type(k, mapped_type())).first)).second;
+				//return (*(this->insert(value_type(k, mapped_type())).first)).second;
+				return ((this->insert(ft::make_pair(k, mapped_type())).first)->second);
 			}
 
 			//	MODIFIERS
@@ -181,6 +194,7 @@ namespace ft
 				new_mnode = _bst_alloc.allocate(1);
 				_bst_alloc.construct(new_mnode, node(val));
 				new_mnode->parent = map_node;
+
 				if (_comp(map_node->val.first, val.first))
 				{
 					new_mnode->right = map_node->right;
@@ -203,7 +217,7 @@ namespace ft
 
 			iterator insert (iterator position, const value_type& val)
 			{
-				//void (position);
+				( void (position) );
 				return (this->insert(val).first);
 			}
 
@@ -220,89 +234,89 @@ namespace ft
 			void erase (iterator position)
 			{
 				node	*map_node;
-				node	*right;
-				node	*left;
 				node	*parent;
+				node	*left;
+				node	*right;
 				node	*next;
 
-			map_node = position.get_node();
-			right = map_node->right;
-			left = map_node->left;
-			parent = map_node->parent;
-            next = map_node->next_node();
-			if (!right && !left)
-			{
-				if (parent->right == map_node)
-					parent->right = NULL;
-				else
-					parent->left = NULL;
-			}
-			else if (!right && left)
-			{
-				if (parent->right == map_node)
-					parent->right = left;
-				else
-					parent->left = left;
-				left->parent = parent;
-			}
-			else if (right && !left)
-			{
-				if (parent->right == map_node)
-					parent->right = right;
-				else
-					parent->left = right;
-				right->parent = parent;
-			}
-			else
-			{
-				if (next != map_node->right)
+				map_node = position.get_node();
+				right = map_node->right;
+				left = map_node->left;
+				parent = map_node->parent;
+				next = map_node->next_node();
+				if (!right && !left)
 				{
-					if (next->right)
+					if (parent->right == map_node)
+						parent->right = NULL;
+					else
+						parent->left = NULL;
+				}
+				else if (!right && left)
+				{
+					if (parent->right == map_node)
+						parent->right = left;
+					else
+						parent->left = left;
+					left->parent = parent;
+				}
+				else if (right && !left)
+				{
+					if (parent->right == map_node)
+						parent->right = right;
+					else
+						parent->left = right;
+					right->parent = parent;
+				}
+				else
+				{
+					if (next != map_node->right)
 					{
-						next->parent->left = next->right;
-						next->right->parent = next->parent;
+						if (next->right)
+						{
+							next->parent->left = next->right;
+							next->right->parent = next->parent;
+						}
+						if (!parent)
+							_root = next;
+						else if (parent->right == map_node)
+							parent->right = next;
+						else
+							parent->left = next;
+						if (next->parent->right == next)
+							next->parent->right = NULL;
+						else
+							next->parent->left = NULL;
+						next->parent = parent;
+						next->right = right;
+						next->left = left;
+						left->parent = next;
+						right->parent = next;
 					}
-					if (!parent)
-						_root = next;
-					else if (parent->right == map_node)
-						parent->right = next;
 					else
-						parent->left = next;
-                    if (next->parent->right == next)
-                        next->parent->right = NULL;
-                    else
-                        next->parent->left = NULL;
-					next->parent = parent;
-					next->right = right;
-					next->left = left;
-					left->parent = next;
-					right->parent = next;
+					{
+						if (!parent)
+							_root = next;
+						else if (parent->right == map_node)
+							parent->right = next;
+						else
+							parent->left = next;
+						left->parent = next;
+						next->parent = parent;
+						next->left = left;
+					}
 				}
-				else
+				_bst_alloc.destroy(map_node);
+				_bst_alloc.deallocate(map_node, 1);
+				_size--;
+				if (_size == 0)
 				{
-					if (!parent)
-						_root = next;
-					else if (parent->right == map_node)
-						parent->right = next;
-					else
-						parent->left = next;
-					left->parent = next;
-					next->parent = parent;
-					next->left = left;
+					_root = NULL;
+					_rend->right = NULL;
+					_rend->left = NULL;
+					_end->right = NULL;
+					_end->left = NULL;
+					_rend->parent = _end;
 				}
-			}
-			_bst_alloc.destroy(map_node);
-			_bst_alloc.deallocate(map_node, 1);
-			_size--;
-			if (_size == 0)
-			{
-				_root = NULL;
-				_rend->right = NULL;
-				_rend->left = NULL;
-				_end->right = NULL;
-				_end->left = NULL;
-				_rend->parent = _end;
-			}
 			}
 
 			size_type erase (const key_type& k)
@@ -317,40 +331,41 @@ namespace ft
 
 			void erase (iterator first, iterator last)
 			{
-				iterator temp;
+				iterator it;
 
 				if (first == last)
 					return;
-				temp = first;
+				it = first;
 				erase(++first, last);
-				erase(temp);
+				erase(it);
 			}
 
 			void swap (map& x)
 			{
-				 typename Alloc::template rebind<node>::other
+				typename Alloc::template rebind<node>::other
 							tmp_bst_alloc = this->_bst_alloc;
 				Alloc		tmp_alloc = this->_alloc;
-				pointer		tmp_root = this->_root;
-				pointer		tmp_end = this->_end;
-				pointer		tmp_rend = this->_rend;
 				Compare		tmp_comp = this->_comp;
 				size_type	tmp_size = this->_size;
+				node*		tmp_root = this->_root;
+				node*		tmp_end = this->_end;
+				node*		tmp_rend = this->_rend;
+
 
 				if (x == *this)
 					return;
 				this->_bst_alloc = x._bst_alloc;
 				this->_alloc = x._alloc;
-				this->_size = x._size;
 				this->_comp = x._comp;
+				this->_size = x._size;
 				this->_root = x._root;
 				this->_end = x._end;
 				this->_rend = x._rend;
 
 				x._bst_alloc = tmp_bst_alloc;
 				x._alloc = tmp_alloc;
-				x._size = tmp_size;
 				x._comp = tmp_comp;
+				x._size = tmp_size;
 				x._root = tmp_root;
 				x._end = tmp_end;
 				x._rend = tmp_rend;
@@ -385,6 +400,7 @@ namespace ft
 				else
 					return (map::end());
 			}
+
 			const_iterator find (const key_type &k) const
 			{
 				node* map_node;
@@ -413,12 +429,51 @@ namespace ft
 				return (true);
 			}
 
-			iterator lower_bound (const key_type& k) {}
-			const_iterator lower_bound (const key_type& k) const {}
-			iterator upper_bound (const key_type& k) {}
-			const_iterator upper_bound (const key_type& k) const {}
-			pair<const_iterator,const_iterator> equal_range (const key_type& k) const {}
-			pair<iterator,iterator> equal_range (const key_type& k) {}
+			iterator lower_bound (const key_type& k)
+			{
+				iterator it = this->begin();
+
+				while (it != this->end() && _comp(it->first, k))
+					it++;
+				return (it);
+			}
+
+			const_iterator lower_bound (const key_type& k) const
+			{
+				const_iterator it = this->begin();
+
+				while (it != this->end() && _comp(it->first, k))
+					it++;
+				return (it);
+			}
+
+			iterator upper_bound (const key_type& k)
+			{
+				reverse_iterator it = this->rbegin();
+
+				while (it != this->rend() && _comp(k, it->first))
+					it++;
+				return (it);
+			}
+
+			const_iterator upper_bound (const key_type& k) const
+			{
+				const_reverse_iterator it = this->rbegin();
+
+				while (it != this->rend() && _comp(k, it->first))
+					it++;
+				return (it);
+			}
+
+			pair<const_iterator,const_iterator> equal_range (const key_type& k) const
+			{
+				return (ft::make_pair(this->lower_bound(k), this->upper_bound(k)));
+			}
+
+			pair<iterator,iterator> equal_range (const key_type& k)
+			{
+				return (ft::make_pair(this->lower_bound(k), this->upper_bound(k)));
+			}
 
 			//	ALLOCATOR
 			allocator_type get_allocator() const {return (this->_alloc);}

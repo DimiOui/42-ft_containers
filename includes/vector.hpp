@@ -5,9 +5,7 @@
 
 #include <algorithm>
 #include "vector_iterator.hpp"
-#include "reverse_iterator.hpp"
 #include "enable_if.hpp"
-#include "reverse_iterator.hpp"
 #include "equal.hpp"
 #include "is_integral.hpp"
 #include "lexicographical_compare.hpp"

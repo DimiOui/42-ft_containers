@@ -4,6 +4,7 @@
 #pragma once
 
 #include "iterator_traits.hpp"
+#include "map_iterator.hpp"
 
 namespace ft
 {

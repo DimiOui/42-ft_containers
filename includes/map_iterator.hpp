@@ -78,11 +78,6 @@ namespace ft
 				return (_current_node == x.get_node());
 			}
 
-			//bool operator== (const map_iterator& x)
-			//{
-			//	return (_current_node == x.get_node());
-			//}
-
 			bool operator!= (const map_iterator& x) const
 			{
 				return (_current_node != x.get_node());

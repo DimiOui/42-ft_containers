@@ -10,8 +10,7 @@
 namespace ft
 {
 	template <class T, class U, class Category = std::bidirectional_iterator_tag,
-		class Distance = ptrdiff_t, class Tpointer = T*, class Treference = T&,
-		class Upointer = U*, class Ureference = U&>
+		class Distance = std::ptrdiff_t, class Pointer = U*, class Reference = U&>
 	class map_iterator
 	{
 		public:
@@ -19,18 +18,16 @@ namespace ft
 			typedef Category iterator_category;
 			typedef T value_type;
 			typedef Distance difference_type;
-			typedef Tpointer t_pointer;
-			typedef Upointer u_pointer;
-			typedef Treference t_reference;
-			typedef Ureference u_reference;
+			typedef Pointer pointer;
+			typedef Reference reference;
 
 			//	MEMBER FUNCTIONS
 			map_iterator() : _current_node() {}
-			map_iterator(t_pointer ptr) : _current_node(ptr) {}
-			map_iterator(const t_reference ref) {*this = ref;} //not sure
+			map_iterator(T* ptr) : _current_node(ptr) {}
+			map_iterator(const map_iterator& ref) {*this = ref;} //not sure
 			~map_iterator() {}
 
-			u_reference operator*() const {return (_current_node->val);}
+			reference operator*() const {return (_current_node->val);}
 
 			map_iterator& operator++()
 			{
@@ -58,7 +55,7 @@ namespace ft
 				return (*this);
 			}
 
-			u_pointer operator->() const
+			pointer operator->() const
 			{
 				return (&_current_node->val);
 			}
@@ -70,7 +67,7 @@ namespace ft
 				return (*this);
 			}
 
-			t_pointer get_node() const {return (_current_node);}
+			T* get_node() const {return (_current_node);}
 
 			//	COMPARISON
 			bool operator== (const map_iterator& x) const

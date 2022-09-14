@@ -24,7 +24,7 @@ namespace ft
 			typedef typename allocator_type::const_reference const_reference;
 			typedef typename allocator_type::pointer pointer;
 			typedef typename allocator_type::const_pointer const_pointer;
-			typedef BST_node<value_type> node;
+			typedef search_tree_node<value_type> node;
 			typedef map_iterator<node, value_type> iterator; //not done
 			typedef map_iterator<node, const value_type> const_iterator; // not done
 			typedef ft::reverse_iterator<iterator> reverse_iterator;
@@ -146,7 +146,6 @@ namespace ft
 			//	ELEMENT ACCESS
 			mapped_type& operator[] (const key_type& k)
 			{
-				//return (*(this->insert(value_type(k, mapped_type())).first)).second;
 				return ((this->insert(ft::make_pair(k, mapped_type())).first)->second);
 			}
 
@@ -155,20 +154,27 @@ namespace ft
 			{
 				iterator	it;
 				node		*map_node;
-				node		*new_mnode;
+				node		*new_map_node;
 
 				if (!_root)
 				{
-					_root = _bst_alloc.allocate(1);
-					_bst_alloc.construct(_root, node(val));
+					try
+					{
+						_root = _bst_alloc.allocate(1);
+						_bst_alloc.construct(_root, node(val));
 
-					_root->left = _rend;
-					_root->right = _end;
-					_end->parent = _root;
-					_rend->parent = _root;
-					_size = 1;
+						_root->left = _rend;
+						_root->right = _end;
+						_end->parent = _root;
+						_rend->parent = _root;
+						_size = 1;
 
-					return (ft::make_pair(iterator(_root), true));
+						return (ft::make_pair(iterator(_root), true));
+					}
+					catch(const std::exception& e)
+					{
+						std::cerr << e.what() << '\n';
+					}
 				}
 				it = this->find(val.first);
 				if (it != this->end())
@@ -191,28 +197,28 @@ namespace ft
 							break;
 					}
 				}
-				new_mnode = _bst_alloc.allocate(1);
-				_bst_alloc.construct(new_mnode, node(val));
-				new_mnode->parent = map_node;
+				new_map_node = _bst_alloc.allocate(1);
+				_bst_alloc.construct(new_map_node, node(val));
+				new_map_node->parent = map_node;
 
 				if (_comp(map_node->val.first, val.first))
 				{
-					new_mnode->right = map_node->right;
-					if (new_mnode->right)
-						new_mnode->right->parent = new_mnode;
-					new_mnode->left = NULL;
-					map_node->right = new_mnode;
+					new_map_node->right = map_node->right;
+					if (new_map_node->right)
+						new_map_node->right->parent = new_map_node;
+					new_map_node->left = NULL;
+					map_node->right = new_map_node;
 				}
 				else
 				{
-					new_mnode->left = map_node->left;
-					if (new_mnode->left)
-						new_mnode->left->parent = new_mnode;
-					new_mnode->right = NULL;
-					map_node->left = new_mnode;
+					new_map_node->left = map_node->left;
+					if (new_map_node->left)
+						new_map_node->left->parent = new_map_node;
+					new_map_node->right = NULL;
+					map_node->left = new_map_node;
 				}
 				_size++;
-				return (ft::make_pair(new_mnode, true));
+				return (ft::make_pair(new_map_node, true));
 			}
 
 			iterator insert (iterator position, const value_type& val)
@@ -453,7 +459,7 @@ namespace ft
 
 				while (it != this->rend() && _comp(k, it->first))
 					it++;
-				return (it);
+				return (it.base());
 			}
 
 			const_iterator upper_bound (const key_type& k) const
@@ -462,7 +468,7 @@ namespace ft
 
 				while (it != this->rend() && _comp(k, it->first))
 					it++;
-				return (it);
+				return (it.base());
 			}
 
 			pair<const_iterator,const_iterator> equal_range (const key_type& k) const

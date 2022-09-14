@@ -10,21 +10,21 @@ namespace ft
 {
 
 	template <class Pair>
-	struct BST_node
+	struct search_tree_node
 	{
-		struct BST_node* parent;
-		struct BST_node* left;
-		struct BST_node* right;
+		struct search_tree_node* parent;
+		struct search_tree_node* left;
+		struct search_tree_node* right;
 		Pair val;
 
-		explicit BST_node() : parent(NULL), left(NULL), right(NULL), val() {}
-		explicit BST_node(const Pair& data) : parent(NULL), left(NULL), right(NULL),
-											val(data) {}
-		BST_node(const BST_node& x) : parent(x.parent), left(x.left),
+		explicit search_tree_node() : parent(NULL), left(NULL), right(NULL), val() {}
+		explicit search_tree_node(const Pair& value) : parent(NULL), left(NULL), right(NULL),
+											val(value) {}
+		search_tree_node(const search_tree_node& x) : parent(x.parent), left(x.left),
 									right(x.right), val(x.val) {}
-		~BST_node() {}
+		~search_tree_node() {}
 
-		BST_node& operator= (const BST_node& x)
+		search_tree_node& operator= (const search_tree_node& x)
 		{
 			if (this != &x)
 			{
@@ -36,7 +36,7 @@ namespace ft
 			return (*this);
 		}
 
-		BST_node* min_node(BST_node *node)
+		search_tree_node* min_node(search_tree_node *node)
 		{
 			if (!node)
 				return (NULL);
@@ -45,7 +45,7 @@ namespace ft
 			return (node);
 		}
 
-		BST_node* max_node(BST_node *node)
+		search_tree_node* max_node(search_tree_node *node)
 		{
 			if (!node)
 				return (NULL);
@@ -54,10 +54,10 @@ namespace ft
 			return (node);
 		}
 
-		BST_node* next_node()
+		search_tree_node* next_node()
 		{
-			BST_node* temp = this;
-			BST_node* temp_parent = temp->parent;
+			search_tree_node* temp = this;
+			search_tree_node* temp_parent = temp->parent;
 
 			if (temp->right)
 				return (min_node(temp->right));
@@ -69,10 +69,10 @@ namespace ft
 			return (temp_parent);
 		}
 
-		BST_node* prev_node()
+		search_tree_node* prev_node()
 		{
-			BST_node* temp = this;
-			BST_node* temp_parent = temp->parent;
+			search_tree_node* temp = this;
+			search_tree_node* temp_parent = temp->parent;
 
 			if (temp->left)
 				return (max_node(temp->left));

@@ -4,11 +4,11 @@
 #pragma once
 
 #include <algorithm>
-#include "vector_iterator.hpp"
-#include "enable_if.hpp"
-#include "equal.hpp"
-#include "is_integral.hpp"
-#include "lexicographical_compare.hpp"
+#include "../iterators/vector_iterator.hpp"
+#include "../utils/enable_if.hpp"
+#include "../utils/equal.hpp"
+#include "../utils/is_integral.hpp"
+#include "../utils/lexicographical_compare.hpp"
 
 namespace ft
 {

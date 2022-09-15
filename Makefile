@@ -12,7 +12,17 @@ SRCS		=	srcs/main.cpp
 
 OBJS		= $(SRCS:.cpp=.o)
 
-INC			= includes/vector.hpp includes/iterator_traits.hpp includes/reverse_iterator.hpp includes/enable_if.hpp includes/equal.hpp includes/is_integral.hpp includes/lexicographical_compare.hpp includes/pair.hpp includes/map.hpp includes/map_binary_tree.hpp includes/map_iterator.hpp
+INC			=	includes/containers/vector.hpp \
+				includes/iterators/iterator_traits.hpp \
+				includes/iterators/reverse_iterator.hpp \
+				includes/utils/enable_if.hpp \
+				includes/utils/equal.hpp \
+				includes/utils/is_integral.hpp \
+				includes/utils/lexicographical_compare.hpp \
+				includes/utils/pair.hpp \
+				includes/containers/map.hpp \
+				includes/utils/map_binary_tree.hpp \
+				includes/iterators/map_iterator.hpp
 
 NAME		= ft_containers
 
@@ -20,7 +30,7 @@ RM			= rm -f
 
 CC			= c++
 
-CFLAGS		=   -std=c++98 -Wall -Wextra -Werror -Iincludes -g3
+CFLAGS		=   -std=c++98 -Wall -Wextra -Werror -Iincludes/containers -g3
 
 %.o : %.cpp
 			$(call compiling,$<,$(<:.cpp=.o),0)
@@ -37,7 +47,7 @@ clean:
 			$(call removing,$(OBJS))
 
 fclean:		clean
-			$(RM) $(NAME)
+			$(RM) $(NAME) timestamps.txt
 
 re:			fclean all
 

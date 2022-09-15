@@ -1,7 +1,8 @@
 #include <iostream>
+#include <iomanip>
+#include <fstream>
 #include <string>
 #include <sys/time.h>
-#include <iomanip>
 
 #define KNRM "\x1B[0m"
 #define KRED "\x1B[31m"
@@ -13,12 +14,14 @@
 #define KWHT "\x1B[37m"
 
 //*************************************************************************************************//
-//  =========================================USAGE===============================================  //
-//                           1 FOR STD CONTAINERS, 0 FOR FT CONTAINERS                             //
+//  ============================================USAGE============================================  //
+//                                                                                                 //
+//                            1 FOR STD CONTAINERS, 0 FOR FT CONTAINERS                            //
+//                                                                                                 //
 //                                                                                                 //
 //  run tests with FT(0) : ./ft_containers > FT_TESTS                                              //
 //  run tests with STD(1) : ./ft_containers > STD_TESTS                                            //
-//  make a diff of the 2 output files to verify the behaviors are the same between ft and std      //
+//  run a diff on the 2 output files to verify the behaviors are the same between ft and std       //
 //*************************************************************************************************//
 
 #if 0
@@ -30,15 +33,15 @@ namespace ft = std;
 #include "map.hpp"
 #endif
 
-//  Function to print the timestamps
-void print_test_time(const struct timeval &start)
-{
-  struct timeval end;
-  gettimeofday(&end, NULL);
-  std::cout << KBLU "Time spent : ";
-  std::cout << (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_usec - start.tv_usec);
-  std::cout << " units" << KNRM << std::endl;
-}
+  //  Function to print the timestamps in an outfile
+  void print_test_time(const struct timeval &start, std::ofstream &out)
+  {
+    struct timeval end;
+    gettimeofday(&end, NULL);
+    out << "Time spent : ";
+    out << (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_usec - start.tv_usec);
+    out << " units" << std::endl;
+  }
 
 //  Functions used for MAP
 bool fncomp(char lhs, char rhs) { return lhs < rhs; }
@@ -60,15 +63,16 @@ struct classcomp
 int main()
 {
   struct timeval start_time;
+  std::ofstream outfile("timestamps.txt");
 
   /////////////////////////////////////////////**VECTOR**////////////////////////////////////////////
-  std::cout << KYEL "///////////////////////////////////**VECTOR**";
+  std::cout << KGRN "///////////////////////////////////**VECTOR**";
   std::cout << "///////////////////////////////////" KWHT << std::endl;
   std::cout << std::endl;
   //  CONSTRUCTING VECTORS
   {
     gettimeofday(&start_time, NULL);
-    std::cout << KYEL "CONSTRUCTOR TESTS..." KWHT << std::endl;
+    std::cout << KGRN "CONSTRUCTOR TESTS..." KWHT << std::endl;
     // The contents of fifth are: 16 2 77 29
     ft::vector<int> first;                               // empty vector of ints
     ft::vector<int> second(4, 100);                      // four ints with value 100
@@ -82,13 +86,13 @@ int main()
     for (ft::vector<int>::iterator it = fifth.begin(); it != fifth.end(); ++it)
       std::cout << ' ' << *it;
     std::cout << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   // OPERATOR =
   {
-    std::cout << KYEL "OPERATOR = TESTS..." KWHT << std::endl;
+    std::cout << KGRN "OPERATOR = TESTS..." KWHT << std::endl;
     ft::vector<int> foo(3, 0);
     ft::vector<int> bar(5, 0);
 
@@ -97,13 +101,13 @@ int main()
 
     std::cout << "Size of foo: " << int(foo.size()) << '\n';
     std::cout << "Size of bar: " << int(bar.size()) << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   // BEGIN ITERATOR TEST
   {
-    std::cout << KYEL "BEGIN ITERATOR TESTS..." KWHT << std::endl;
+    std::cout << KGRN "BEGIN ITERATOR TESTS..." KWHT << std::endl;
     ft::vector<int> myvector;
     for (int i = 1; i <= 5; i++)
       myvector.push_back(i);
@@ -112,12 +116,12 @@ int main()
     for (ft::vector<int>::iterator it = myvector.begin(); it != myvector.end(); ++it)
       std::cout << ' ' << *it;
     std::cout << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   // BEGIN REVERSE ITERATOR TEST
   {
-    std::cout << KYEL "BEGIN REVERSE ITERATOR TESTS..." KWHT << std::endl;
+    std::cout << KGRN "BEGIN REVERSE ITERATOR TESTS..." KWHT << std::endl;
     ft::vector<int> myvector(5); // 5 default-constructed ints
 
     int i = 0;
@@ -130,13 +134,13 @@ int main()
     for (ft::vector<int>::iterator it = myvector.begin(); it != myvector.end(); ++it)
       std::cout << ' ' << *it;
     std::cout << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   // END ITERATOR TEST
   {
-    std::cout << KYEL "END ITERATOR TESTS..." KWHT << std::endl;
+    std::cout << KGRN "END ITERATOR TESTS..." KWHT << std::endl;
     ft::vector<int> myvector;
     for (int i = 1; i <= 5; i++)
       myvector.push_back(i);
@@ -145,12 +149,12 @@ int main()
     for (ft::vector<int>::iterator it = myvector.begin(); it != myvector.end(); ++it)
       std::cout << ' ' << *it;
     std::cout << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   // END REVERSE ITERATOR TEST
   {
-    std::cout << KYEL "END REVERSE ITERATOR TESTS..." KWHT << std::endl;
+    std::cout << KGRN "END REVERSE ITERATOR TESTS..." KWHT << std::endl;
     ft::vector<int> myvector(5); // 5 default-constructed ints
 
     ft::vector<int>::reverse_iterator rit = myvector.rbegin();
@@ -163,13 +167,13 @@ int main()
     for (ft::vector<int>::iterator it = myvector.begin(); it != myvector.end(); ++it)
       std::cout << ' ' << *it;
     std::cout << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   // SIZE TEST
   {
-    std::cout << KYEL "SIZE TESTS..." KWHT << std::endl;
+    std::cout << KGRN "SIZE TESTS..." KWHT << std::endl;
     ft::vector<int> myints;
     std::cout << "0. size: " << myints.size() << '\n';
 
@@ -182,13 +186,13 @@ int main()
 
     myints.pop_back();
     std::cout << "3. size: " << myints.size() << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   // MAX SIZE TESTS
   {
-    std::cout << KYEL "MAX SIZE TESTS..." KWHT << std::endl;
+    std::cout << KGRN "MAX SIZE TESTS..." KWHT << std::endl;
     ft::vector<int> myvector;
 
     // set some content in the vector:
@@ -198,13 +202,13 @@ int main()
     std::cout << "size: " << myvector.size() << "\n";
     std::cout << "capacity: " << myvector.capacity() << "\n";
     std::cout << "max_size: " << myvector.max_size() << "\n";
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   // RESIZE TESTS
   {
-    std::cout << KYEL "RESIZE TESTS..." KWHT << std::endl;
+    std::cout << KGRN "RESIZE TESTS..." KWHT << std::endl;
     ft::vector<int> myvector;
 
     // set some initial content:
@@ -219,13 +223,13 @@ int main()
     for (int i = 0; i < static_cast<int>(myvector.size()); i++)
       std::cout << ' ' << myvector[i];
     std::cout << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   // CAPACITY TESTS
   {
-    std::cout << KYEL "CAPACITY TESTS..." KWHT << std::endl;
+    std::cout << KGRN "CAPACITY TESTS..." KWHT << std::endl;
     ft::vector<int> myvector;
 
     // set some content in the vector:
@@ -235,13 +239,13 @@ int main()
     std::cout << "size: " << (int)myvector.size() << '\n';
     std::cout << "capacity: " << (int)myvector.capacity() << '\n';
     std::cout << "max_size: " << (int)myvector.max_size() << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   // EMPTY TESTS
   {
-    std::cout << KYEL "EMPTY TESTS..." KWHT << std::endl;
+    std::cout << KGRN "EMPTY TESTS..." KWHT << std::endl;
     ft::vector<int> myvector;
     int sum(0);
 
@@ -254,13 +258,13 @@ int main()
       myvector.pop_back();
     }
     std::cout << "total: " << sum << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   // RESERVE TESTS
   {
-    std::cout << KYEL "RESERVE TESTS..." KWHT << std::endl;
+    std::cout << KGRN "RESERVE TESTS..." KWHT << std::endl;
     ft::vector<int>::size_type sz;
 
     ft::vector<int> foo;
@@ -289,13 +293,13 @@ int main()
         std::cout << "capacity changed: " << sz << '\n';
       }
     }
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   // OPERATOR [] TESTS
   {
-    std::cout << KYEL "OPERATOR [] TESTS..." KWHT << std::endl;
+    std::cout << KGRN "OPERATOR [] TESTS..." KWHT << std::endl;
 
     ft::vector<int> myvector(10); // 10 zero-initialized elements
 
@@ -318,13 +322,13 @@ int main()
     for (unsigned i = 0; i < sz; i++)
       std::cout << ' ' << myvector[i];
     std::cout << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   // AT TESTS
   {
-    std::cout << KYEL "AT TESTS..." KWHT << std::endl;
+    std::cout << KGRN "AT TESTS..." KWHT << std::endl;
     ft::vector<int> myvector(10); // 10 zero-initialized ints
 
     // assign some values:
@@ -335,13 +339,13 @@ int main()
     for (unsigned i = 0; i < myvector.size(); i++)
       std::cout << ' ' << myvector.at(i);
     std::cout << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   //  FRONT TESTS
   {
-    std::cout << KYEL "FRONT TESTS..." KWHT << std::endl;
+    std::cout << KGRN "FRONT TESTS..." KWHT << std::endl;
     ft::vector<int> myvector;
 
     myvector.push_back(78);
@@ -352,13 +356,13 @@ int main()
     myvector.front() -= myvector.back();
 
     std::cout << "myvector.front() is now " << myvector.front() << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   // BACK TESTS
   {
-    std::cout << KYEL "BACK TESTS..." KWHT << std::endl;
+    std::cout << KGRN "BACK TESTS..." KWHT << std::endl;
     ft::vector<int> myvector;
 
     myvector.push_back(10);
@@ -372,13 +376,13 @@ int main()
     for (unsigned i = 0; i < myvector.size(); i++)
       std::cout << ' ' << myvector[i];
     std::cout << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   //  ASSIGN TESTS
   {
-    std::cout << KYEL "ASSIGN TESTS..." KWHT << std::endl;
+    std::cout << KGRN "ASSIGN TESTS..." KWHT << std::endl;
     ft::vector<int> first;
     ft::vector<int> second;
     ft::vector<int> third;
@@ -396,13 +400,13 @@ int main()
     std::cout << "Size of first: " << int(first.size()) << '\n';
     std::cout << "Size of second: " << int(second.size()) << '\n';
     std::cout << "Size of third: " << int(third.size()) << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   // INSERT TESTS
   {
-    std::cout << KYEL "INSERT TESTS..." KWHT << std::endl;
+    std::cout << KGRN "INSERT TESTS..." KWHT << std::endl;
     ft::vector<int> myvector(3, 100);
     ft::vector<int>::iterator it;
 
@@ -423,13 +427,13 @@ int main()
     for (it = myvector.begin(); it < myvector.end(); it++)
       std::cout << ' ' << *it;
     std::cout << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   // ERASE TESTS
   {
-    std::cout << KYEL "ERASE TESTS..." KWHT << std::endl;
+    std::cout << KGRN "ERASE TESTS..." KWHT << std::endl;
     ft::vector<int> myvector;
     // set some values (from 1 to 10)
     for (int i = 1; i <= 10; i++)
@@ -445,13 +449,13 @@ int main()
     for (unsigned i = 0; i < myvector.size(); ++i)
       std::cout << ' ' << myvector[i];
     std::cout << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   // SWAP TESTS
   {
-    std::cout << KYEL "SWAP TESTS..." KWHT << std::endl;
+    std::cout << KGRN "SWAP TESTS..." KWHT << std::endl;
     ft::vector<int> foo(3, 100); // three ints with a value of 100
     ft::vector<int> bar(5, 200); // five ints with a value of 200
 
@@ -466,13 +470,13 @@ int main()
     for (unsigned i = 0; i < bar.size(); i++)
       std::cout << ' ' << bar[i];
     std::cout << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   // CLEAR TESTS
   {
-    std::cout << KYEL "CLEAR TESTS..." KWHT << std::endl;
+    std::cout << KGRN "CLEAR TESTS..." KWHT << std::endl;
     ft::vector<int> myvector;
     myvector.push_back(100);
     myvector.push_back(200);
@@ -491,13 +495,13 @@ int main()
     for (unsigned i = 0; i < myvector.size(); i++)
       std::cout << ' ' << myvector[i];
     std::cout << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   // GET ALLOCATOR TESTS
   {
-    std::cout << KYEL "ALLOCATOR TESTS..." KWHT << std::endl;
+    std::cout << KGRN "ALLOCATOR TESTS..." KWHT << std::endl;
     ft::vector<int> myvector;
     int *p;
     unsigned int i;
@@ -518,13 +522,13 @@ int main()
     for (i = 0; i < 5; i++)
       myvector.get_allocator().destroy(&p[i]);
     myvector.get_allocator().deallocate(p, 5);
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   // NON-MEMBER RELATIONAL OPERATORS
   {
-    std::cout << KYEL "NON-MEMBER RELATIONAL OPERATORS TESTS..." KWHT << std::endl;
+    std::cout << KGRN "NON-MEMBER RELATIONAL OPERATORS TESTS..." KWHT << std::endl;
     ft::vector<int> foo(3, 100); // three ints with a value of 100
     ft::vector<int> bar(2, 200); // two ints with a value of 200
 
@@ -540,13 +544,13 @@ int main()
       std::cout << "foo is less than or equal to bar\n";
     if (foo >= bar)
       std::cout << "foo is greater than or equal to bar\n";
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   // NON-MEMBER SWAP TESTS
   {
-    std::cout << KYEL "NON-MEMBER SWAP OPERATORS TESTS..." KWHT << std::endl;
+    std::cout << KGRN "NON-MEMBER SWAP OPERATORS TESTS..." KWHT << std::endl;
     ft::vector<int> foo(3, 100); // three ints with a value of 100
     ft::vector<int> bar(5, 200); // five ints with a value of 200
 
@@ -561,7 +565,7 @@ int main()
     for (ft::vector<int>::iterator it = bar.begin(); it != bar.end(); ++it)
       std::cout << ' ' << *it;
     std::cout << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
 
@@ -577,12 +581,12 @@ int main()
   /////////////////////////////////////////////////////////////////////////////////////////////////////
 
   ///////////////////////////////////////////////**MAP**///////////////////////////////////////////////
-  std::cout << KYEL "///////////////////////////////////**MAP**";
+  std::cout << KGRN "///////////////////////////////////**MAP**";
   std::cout << "///////////////////////////////////" KWHT << std::endl;
   std::cout << std::endl;
   //  CONSTRUCTING MAP
   {
-    std::cout << KYEL "CONSTRUCTOR TESTS..." KWHT << std::endl;
+    std::cout << KGRN "CONSTRUCTOR TESTS..." KWHT << std::endl;
     ft::map<char, int> first;
 
     first['a'] = 10;
@@ -599,13 +603,13 @@ int main()
     bool (*fn_pt)(char, char) = fncomp;
     ft::map<char, int, bool (*)(char, char)> fifth(fn_pt); // function pointer as Compare
     std::cout << "produces no output..." KWHT << std::endl;
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   //  OPERATOR =
   {
-    std::cout << KYEL "OPERATOR = TESTS..." KWHT << std::endl;
+    std::cout << KGRN "OPERATOR = TESTS..." KWHT << std::endl;
     ft::map<char, int> first;
     ft::map<char, int> second;
 
@@ -618,13 +622,13 @@ int main()
 
     std::cout << "Size of first: " << first.size() << '\n';
     std::cout << "Size of second: " << second.size() << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   //  ITERATOR BEGIN
   {
-    std::cout << KYEL "BEGIN ITERATOR TESTS..." KWHT << std::endl;
+    std::cout << KGRN "BEGIN ITERATOR TESTS..." KWHT << std::endl;
     ft::map<char, int> mymap;
 
     mymap['b'] = 100;
@@ -634,13 +638,13 @@ int main()
     // show content:
     for (ft::map<char, int>::iterator it = mymap.begin(); it != mymap.end(); ++it)
       std::cout << it->first << " => " << it->second << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
 
   //  ITERATOR END
   {
-    std::cout << KYEL "END ITERATOR TESTS..." KWHT << std::endl;
+    std::cout << KGRN "END ITERATOR TESTS..." KWHT << std::endl;
     ft::map<char, int> mymap;
 
     mymap['b'] = 100;
@@ -650,12 +654,12 @@ int main()
     // show content:
     for (ft::map<char, int>::iterator it = mymap.begin(); it != mymap.end(); ++it)
       std::cout << it->first << " => " << it->second << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   //  REVERSE ITERATOR BEGIN/END
   {
-    std::cout << KYEL "BEGIN AND END REVERSE ITERATOR TESTS..." KWHT << std::endl;
+    std::cout << KGRN "BEGIN AND END REVERSE ITERATOR TESTS..." KWHT << std::endl;
     ft::map<char, int> mymap;
 
     mymap['x'] = 100;
@@ -666,13 +670,13 @@ int main()
     ft::map<char, int>::reverse_iterator rit;
     for (rit = mymap.rbegin(); rit != mymap.rend(); ++rit)
       std::cout << rit->first << " => " << rit->second << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   //  EMPTY
   {
-    std::cout << KYEL "EMPTY TESTS..." KWHT << std::endl;
+    std::cout << KGRN "EMPTY TESTS..." KWHT << std::endl;
     ft::map<char, int> mymap;
 
     mymap['a'] = 10;
@@ -684,26 +688,26 @@ int main()
       std::cout << mymap.begin()->first << " => " << mymap.begin()->second << '\n';
       mymap.erase(mymap.begin());
     }
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   //  SIZE
   {
-    std::cout << KYEL "SIZE TESTS..." KWHT << std::endl;
+    std::cout << KGRN "SIZE TESTS..." KWHT << std::endl;
     ft::map<char, int> mymap;
     mymap['a'] = 101;
     mymap['b'] = 202;
     mymap['c'] = 302;
 
     std::cout << "mymap.size() is " << mymap.size() << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   //  MAX SIZE
   {
-    std::cout << KYEL "MAX SIZE TESTS..." KWHT << std::endl;
+    std::cout << KGRN "MAX SIZE TESTS..." KWHT << std::endl;
     int i;
     ft::map<int, int> mymap;
 
@@ -715,13 +719,13 @@ int main()
     }
     else
       std::cout << "The map could not hold 1000 elements.\n";
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   //  OPERATOR []
   {
-    std::cout << KYEL "OPERATOR [] TESTS..." KWHT << std::endl;
+    std::cout << KGRN "OPERATOR [] TESTS..." KWHT << std::endl;
     ft::map<char, std::string> mymap;
 
     mymap['a'] = "an element";
@@ -734,13 +738,13 @@ int main()
     std::cout << "mymap['d'] is " << mymap['d'] << '\n';
 
     std::cout << "mymap now contains " << mymap.size() << " elements.\n";
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   //  INSERT
   {
-    std::cout << KYEL "INSERT TESTS..." KWHT << std::endl;
+    std::cout << KGRN "INSERT TESTS..." KWHT << std::endl;
     ft::map<char, int> mymap;
 
     // first insert function version (single parameter):
@@ -772,13 +776,13 @@ int main()
     std::cout << "anothermap contains:\n";
     for (it = anothermap.begin(); it != anothermap.end(); ++it)
       std::cout << it->first << " => " << it->second << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   //  OPERATOR []
   {
-    std::cout << KYEL "ERASE TESTS..." KWHT << std::endl;
+    std::cout << KGRN "ERASE TESTS..." KWHT << std::endl;
     ft::map<char, int> mymap;
     ft::map<char, int>::iterator it;
 
@@ -801,13 +805,13 @@ int main()
     // show content:
     for (it = mymap.begin(); it != mymap.end(); ++it)
       std::cout << it->first << " => " << it->second << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   //  SWAP
   {
-    std::cout << KYEL "SWAP TESTS..." KWHT << std::endl;
+    std::cout << KGRN "SWAP TESTS..." KWHT << std::endl;
     ft::map<char, int> foo, bar;
 
     foo['x'] = 100;
@@ -826,13 +830,13 @@ int main()
     std::cout << "bar contains:\n";
     for (ft::map<char, int>::iterator it = bar.begin(); it != bar.end(); ++it)
       std::cout << it->first << " => " << it->second << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   //  CLEAR
   {
-    std::cout << KYEL "CLEAR TESTS..." KWHT << std::endl;
+    std::cout << KGRN "CLEAR TESTS..." KWHT << std::endl;
     ft::map<char, int> mymap;
 
     mymap['x'] = 100;
@@ -850,13 +854,13 @@ int main()
     std::cout << "mymap contains:\n";
     for (ft::map<char, int>::iterator it = mymap.begin(); it != mymap.end(); ++it)
       std::cout << it->first << " => " << it->second << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   //  KEY_COMP
   {
-    std::cout << KYEL "KEY_COMP TESTS..." KWHT << std::endl;
+    std::cout << KGRN "KEY_COMP TESTS..." KWHT << std::endl;
     ft::map<char, int> mymap;
 
     ft::map<char, int>::key_compare mycomp = mymap.key_comp();
@@ -874,13 +878,13 @@ int main()
     {
       std::cout << it->first << " => " << it->second << '\n';
     } while (mycomp((*it++).first, highest));
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   //  VALUE_COMP
   {
-    std::cout << KYEL "VALUE_COMP TESTS..." KWHT << std::endl;
+    std::cout << KGRN "VALUE_COMP TESTS..." KWHT << std::endl;
     ft::map<char, int> mymap;
 
     mymap['x'] = 1001;
@@ -896,13 +900,13 @@ int main()
     {
       std::cout << it->first << " => " << it->second << '\n';
     } while (mymap.value_comp()(*it++, highest));
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   //  FIND
   {
-    std::cout << KYEL "FIND TESTS..." KWHT << std::endl;
+    std::cout << KGRN "FIND TESTS..." KWHT << std::endl;
     ft::map<char, int> mymap;
     ft::map<char, int>::iterator it;
 
@@ -920,13 +924,13 @@ int main()
     std::cout << "a => " << mymap.find('a')->second << '\n';
     std::cout << "c => " << mymap.find('c')->second << '\n';
     std::cout << "d => " << mymap.find('d')->second << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   //  COUNT
   {
-    std::cout << KYEL "COUNT TESTS..." KWHT << std::endl;
+    std::cout << KGRN "COUNT TESTS..." KWHT << std::endl;
     ft::map<char, int> mymap;
     char c;
 
@@ -942,13 +946,13 @@ int main()
       else
         std::cout << " is not an element of mymap.\n";
     }
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   //  LOWER BOUND
   {
-    std::cout << KYEL "LOWER BOUND TESTS..." KWHT << std::endl;
+    std::cout << KGRN "LOWER BOUND TESTS..." KWHT << std::endl;
     ft::map<char, int> mymap;
     ft::map<char, int>::iterator itlow, itup;
 
@@ -966,13 +970,13 @@ int main()
     // print content:
     for (ft::map<char, int>::iterator it = mymap.begin(); it != mymap.end(); ++it)
       std::cout << it->first << " => " << it->second << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   //  UPPER_BOUND
   {
-    std::cout << KYEL "UPPER BOUND TESTS..." KWHT << std::endl;
+    std::cout << KGRN "UPPER BOUND TESTS..." KWHT << std::endl;
     ft::map<char, int> mymap;
     ft::map<char, int>::iterator itlow, itup;
 
@@ -990,13 +994,13 @@ int main()
     // print content:
     for (ft::map<char, int>::iterator it = mymap.begin(); it != mymap.end(); ++it)
       std::cout << it->first << " => " << it->second << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   //  EQUAL RANGE
   {
-    std::cout << KYEL "EQUAL RANGE TESTS..." KWHT << std::endl;
+    std::cout << KGRN "EQUAL RANGE TESTS..." KWHT << std::endl;
     ft::map<char, int> mymap;
 
     mymap['a'] = 10;
@@ -1011,13 +1015,13 @@ int main()
 
     std::cout << "upper bound points to: ";
     std::cout << ret.second->first << " => " << ret.second->second << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   //  GET ALLOCATOR
   {
-    std::cout << KYEL "GET ALLOCATOR TESTS..." KWHT << std::endl;
+    std::cout << KGRN "GET ALLOCATOR TESTS..." KWHT << std::endl;
     int psize;
     ft::map<char, int> mymap;
     ft::pair<const char, int> *p;
@@ -1031,13 +1035,13 @@ int main()
     std::cout << "The allocated array has a size of " << psize << " bytes.\n";
 
     mymap.get_allocator().deallocate(p, 5);
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   // NON-MEMBER RELATIONAL OPERATORS
   {
-    std::cout << KYEL "NON-MEMBER RELATIONAL OPERATORS TESTS..." KWHT << std::endl;
+    std::cout << KGRN "NON-MEMBER RELATIONAL OPERATORS TESTS..." KWHT << std::endl;
     ft::map<char, int> foo, bar;
     foo['a'] = 100;
     foo['b'] = 200;
@@ -1057,13 +1061,13 @@ int main()
       std::cout << "foo is less than or equal to bar\n";
     if (foo >= bar)
       std::cout << "foo is greater than or equal to bar\n";
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   // NON-MEMBER SWAP TESTS
   {
-    std::cout << KYEL "NON-MEMBER SWAP OPERATORS TESTS..." KWHT << std::endl;
+    std::cout << KGRN "NON-MEMBER SWAP OPERATORS TESTS..." KWHT << std::endl;
     ft::map<char, int> foo, bar;
 
     foo['x'] = 100;
@@ -1082,7 +1086,7 @@ int main()
     std::cout << "bar contains:\n";
     for (ft::map<char, int>::iterator it = bar.begin(); it != bar.end(); ++it)
       std::cout << it->first << " => " << it->second << '\n';
-    print_test_time(start_time);
+    print_test_time(start_time, outfile);
   }
   std::cout << std::endl;
 }

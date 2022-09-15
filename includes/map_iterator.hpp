@@ -5,7 +5,7 @@
 
 #include <iterator>
 #include "reverse_iterator.hpp"
-#include "map_bst.hpp"
+#include "map_binary_tree.hpp"
 
 namespace ft
 {

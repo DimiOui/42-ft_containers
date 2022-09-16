@@ -1,21 +1,21 @@
 #ifndef IS_INTEGRAL_HPP
-# define IS_INTEGRAL_HPP
+#define IS_INTEGRAL_HPP
 
 #pragma once
 
 namespace ft
 {
-	template<class T>
+	template <class T>
 	struct is_integral
 	{
 		static const bool value = false;
 	};
-	template<>
+	template <>
 	struct is_integral<bool>
 	{
 		static const bool value = true;
 	};
-	template<>
+	template <>
 	struct is_integral<char>
 	{
 		static const bool value = true;

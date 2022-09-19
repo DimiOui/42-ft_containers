@@ -31,7 +31,7 @@ namespace ft
 		typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
 		typedef std::ptrdiff_t difference_type;
 		typedef std::size_t size_type;
-		typedef typename Alloc::template rebind<node>::other tree_allocator_type;
+		typedef typename allocator_type::template rebind<node>::other tree_allocator_type;
 
 		//	VALUE COMPARE
 		class value_compare
@@ -161,6 +161,8 @@ namespace ft
 			iterator it;
 			node *map_node;
 			node *new_map_node;
+			node *m_left;
+			node *m_right;
 
 			if (_root == NULL)
 			{
@@ -186,19 +188,21 @@ namespace ft
 			if (it != this->end())
 				return (ft::make_pair(it, false));
 			map_node = _root;
-			while (map_node->right || map_node->left)
+			while (map_node)
 			{
-				if (_comp(map_node->val.first, val.first))
+				if (map_node->val.first < val.first)
 				{
-					if (map_node->right && map_node->right != _end)
-						map_node = map_node->right;
+					m_right = map_node->right;
+					if (m_right && m_right != _end)
+						map_node = m_right;
 					else
 						break;
 				}
 				else
 				{
-					if (map_node->left && map_node->left != _rend)
-						map_node = map_node->left;
+					m_left = map_node->left;
+					if (m_left && m_left != _rend)
+						map_node = m_left;
 					else
 						break;
 				}
@@ -207,7 +211,7 @@ namespace ft
 			_tree_alloc.construct(new_map_node, node(val));
 			new_map_node->parent = map_node;
 
-			if (_comp(map_node->val.first, val.first))
+			if (map_node->val.first < val.first)
 			{
 				new_map_node->right = map_node->right;
 				if (new_map_node->right)
@@ -246,38 +250,38 @@ namespace ft
 		void erase(iterator position)
 		{
 			node *map_node;
-			node *parent;
-			node *left;
-			node *right;
+			node *m_parent;
+			node *m_left;
+			node *m_right;
 			node *next;
 
 			map_node = position.get_node();
-			right = map_node->right;
-			left = map_node->left;
-			parent = map_node->parent;
+			m_right = map_node->right;
+			m_left = map_node->left;
+			m_parent = map_node->parent;
 			next = map_node->next_node();
-			if (!right && !left)
+			if (!m_right && !m_left)
 			{
-				if (parent->right == map_node)
-					parent->right = NULL;
+				if (m_parent->right == map_node)
+					m_parent->right = NULL;
 				else
-					parent->left = NULL;
+					m_parent->left = NULL;
 			}
-			else if (!right && left)
+			else if (!m_right && m_left)
 			{
-				if (parent->right == map_node)
-					parent->right = left;
+				if (m_parent->right == map_node)
+					m_parent->right = m_left;
 				else
-					parent->left = left;
-				left->parent = parent;
+					m_parent->left = m_left;
+				m_left->parent = m_parent;
 			}
-			else if (right && !left)
+			else if (m_right && !m_left)
 			{
-				if (parent->right == map_node)
-					parent->right = right;
+				if (m_parent->right == map_node)
+					m_parent->right = m_right;
 				else
-					parent->left = right;
-				right->parent = parent;
+					m_parent->left = m_right;
+				m_right->parent = m_parent;
 			}
 			else
 			{
@@ -288,33 +292,33 @@ namespace ft
 						next->parent->left = next->right;
 						next->right->parent = next->parent;
 					}
-					if (!parent)
+					if (!m_parent)
 						_root = next;
-					else if (parent->right == map_node)
-						parent->right = next;
+					else if (m_parent->right == map_node)
+						m_parent->right = next;
 					else
-						parent->left = next;
+						m_parent->left = next;
 					if (next->parent->right == next)
 						next->parent->right = NULL;
 					else
 						next->parent->left = NULL;
-					next->parent = parent;
-					next->right = right;
-					next->left = left;
-					left->parent = next;
-					right->parent = next;
+					next->parent = m_parent;
+					next->right = m_right;
+					next->left = m_left;
+					m_left->parent = next;
+					m_right->parent = next;
 				}
 				else
 				{
-					if (!parent)
+					if (!m_parent)
 						_root = next;
-					else if (parent->right == map_node)
-						parent->right = next;
+					else if (m_parent->right == map_node)
+						m_parent->right = next;
 					else
-						parent->left = next;
-					left->parent = next;
-					next->parent = parent;
-					next->left = left;
+						m_parent->left = next;
+					m_left->parent = next;
+					next->parent = m_parent;
+					next->left = m_left;
 				}
 			}
 			_tree_alloc.destroy(map_node);
@@ -561,4 +565,5 @@ namespace ft
 }
 //	https://legacy.cplusplus.com/reference/map/map/
 //	https://algorithmtutor.com/Data-Structures/Tree/Binary-Search-Trees/
+//	https://www.geeksforgeeks.org/binary-search-tree-set-1-search-and-insertion/
 #endif

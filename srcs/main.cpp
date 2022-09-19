@@ -24,7 +24,7 @@
 //  run a diff on the 2 output files to verify the behaviors are the same between ft and std       //
 //*************************************************************************************************//
 
-#if 1
+#if 0
 #include <vector>
 #include <map>
 #include <stack>

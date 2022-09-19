@@ -21,6 +21,7 @@ INC			=	includes/containers/vector.hpp \
 				includes/utils/lexicographical_compare.hpp \
 				includes/utils/pair.hpp \
 				includes/containers/map.hpp \
+				includes/containers/stack.hpp \
 				includes/utils/map_binary_tree.hpp \
 				includes/iterators/map_iterator.hpp
 

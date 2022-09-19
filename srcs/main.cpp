@@ -24,13 +24,15 @@
 //  run a diff on the 2 output files to verify the behaviors are the same between ft and std       //
 //*************************************************************************************************//
 
-#if 0
+#if 1
 #include <vector>
 #include <map>
+#include <stack>
 namespace ft = std;
 #else
 #include "vector.hpp"
 #include "map.hpp"
+#include "stack.hpp"
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1094,6 +1096,149 @@ int main()
     std::cout << "bar contains:\n";
     for (ft::map<char, int>::iterator it = bar.begin(); it != bar.end(); ++it)
       std::cout << it->first << " => " << it->second << '\n';
+    print_test_time(start_time, outfile);
+  }
+  std::cout << std::endl;
+  /////////////////////////////////////////////////////////////////////////////////////////////////////
+  /***************************************************************************************************/
+  /////////////////////////////////////////////////////////////////////////////////////////////////////
+  /***************************************************************************************************/
+  /////////////////////////////////////////////////////////////////////////////////////////////////////
+  /***************************************************************************************************/
+  /////////////////////////////////////////////////////////////////////////////////////////////////////
+  /***************************************************************************************************/
+  //////////////////////////////////////////////**STACK**//////////////////////////////////////////////
+
+  std::cout << KGRN "///////////////////////////////////**STACK**";
+  std::cout << "///////////////////////////////////" KWHT << std::endl;
+  std::cout << std::endl;
+  //  CONSTRUCTING STACK
+  {
+    std::cout << KGRN "CONSTRUCTOR TESTS..." KWHT << std::endl;
+    ft::vector<int> myvector(2, 200); // vector with 2 elements
+
+    ft::stack<int> first;                   // empty stack
+    ft::stack<int, ft::vector<int> > second; // empty stack using vector
+    ft::stack<int, ft::vector<int> > third(myvector);
+
+    std::cout << "size of first: " << first.size() << '\n';
+    std::cout << "size of third: " << second.size() << '\n';
+    std::cout << "size of fourth: " << third.size() << '\n';
+    print_test_time(start_time, outfile);
+  }
+  std::cout << std::endl;
+  ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // EMPTY
+  {
+    std::cout << KGRN "EMPTY TESTS..." KWHT << std::endl;
+    ft::stack<int> mystack;
+    int sum(0);
+
+    for (int i = 1; i <= 10; i++)
+      mystack.push(i);
+
+    while (!mystack.empty())
+    {
+      sum += mystack.top();
+      mystack.pop();
+    }
+
+    std::cout << "total: " << sum << '\n';
+    print_test_time(start_time, outfile);
+  }
+  std::cout << std::endl;
+  ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // SIZE
+  {
+    std::cout << KGRN "SIZE TESTS..." KWHT << std::endl;
+    ft::stack<int> myints;
+    std::cout << "0. size: " << myints.size() << '\n';
+
+    for (int i = 0; i < 5; i++)
+      myints.push(i);
+    std::cout << "1. size: " << myints.size() << '\n';
+
+    myints.pop();
+    std::cout << "2. size: " << myints.size() << '\n';
+    print_test_time(start_time, outfile);
+  }
+  std::cout << std::endl;
+  ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // TOP
+  {
+    std::cout << KGRN "TOP TESTS..." KWHT << std::endl;
+    ft::stack<int> mystack;
+
+    mystack.push(10);
+    mystack.push(20);
+
+    mystack.top() -= 5;
+
+    std::cout << "mystack.top() is now " << mystack.top() << '\n';
+    print_test_time(start_time, outfile);
+  }
+  std::cout << std::endl;
+  ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // PUSH
+  {
+    std::cout << KGRN "PUSH TESTS..." KWHT << std::endl;
+    ft::stack<int> mystack;
+
+    for (int i = 0; i < 5; ++i)
+      mystack.push(i);
+
+    std::cout << "Popping out elements...";
+    while (!mystack.empty())
+    {
+      std::cout << ' ' << mystack.top();
+      mystack.pop();
+    }
+    std::cout << '\n';
+    print_test_time(start_time, outfile);
+  }
+  std::cout << std::endl;
+  ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // POP
+  {
+    std::cout << KGRN "POP TESTS..." KWHT << std::endl;
+    ft::stack<int> mystack;
+
+    for (int i = 0; i < 5; ++i)
+      mystack.push(i);
+
+    std::cout << "Popping out elements...";
+    while (!mystack.empty())
+    {
+      std::cout << ' ' << mystack.top();
+      mystack.pop();
+    }
+    std::cout << '\n';
+    print_test_time(start_time, outfile);
+  }
+  std::cout << std::endl;
+  ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // NON-MEMBER RELATIONAL OPERATORS
+  {
+    std::cout << KGRN "NON-MEMBER RELATIONAL OPERATORS TESTS..." KWHT << std::endl;
+    ft::stack<int> foo; // three ints with a value of 100
+    ft::stack<int> bar; // two ints with a value of 200
+
+    for (int i = 0; i < 5; ++i)
+      foo.push(i);
+    for (int i = 5; i < 10; ++i)
+      bar.push(i);
+    if (foo == bar)
+      std::cout << "foo and bar are equal\n";
+    if (foo != bar)
+      std::cout << "foo and bar are not equal\n";
+    if (foo < bar)
+      std::cout << "foo is less than bar\n";
+    if (foo > bar)
+      std::cout << "foo is greater than bar\n";
+    if (foo <= bar)
+      std::cout << "foo is less than or equal to bar\n";
+    if (foo >= bar)
+      std::cout << "foo is greater than or equal to bar\n";
     print_test_time(start_time, outfile);
   }
   std::cout << std::endl;

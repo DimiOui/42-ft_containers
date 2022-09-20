@@ -396,45 +396,75 @@ namespace ft
 		value_compare value_comp() const { return (value_compare(key_compare())); }
 
 		//	OPERATIONS
+		node *find_node(node *map_node, key_type k) const
+		{
+			if (!map_node)
+				return (NULL);
+			if (map_node->val.first == k)
+				return (map_node);
+			if (map_node->val.first > k)
+				return (find_node(map_node->left, k));
+			else
+				return (find_node(map_node->right, k));
+		}
+
 		iterator find(const key_type &k)
 		{
-			node *map_node;
+			node *map_node = find_node(_root, k);
 
-			map_node = _root;
-			while (map_node && map_node != _end && map_node != _rend &&
-				   (_comp(map_node->val.first, k) || _comp(k, map_node->val.first)))
-			{
-				if (_comp(map_node->val.first, k))
-					map_node = map_node->right;
-				else
-					map_node = map_node->left;
-			}
-			if (map_node && map_node != _end && map_node != _rend &&
-				(!_comp(map_node->val.first, k) || !_comp(k, map_node->val.first)))
-				return (iterator(map_node));
-			else
-				return (map::end());
+			if (!map_node)
+				return (this->end());
+			return (iterator(map_node));
 		}
+
+		//iterator find(const key_type &k)
+		//{
+		//	node *map_node;
+
+		//	map_node = _root;
+		//	while (map_node && map_node != _end && map_node != _rend &&
+		//		   (_comp(map_node->val.first, k) || _comp(k, map_node->val.first)))
+		//	{
+		//		if (_comp(map_node->val.first, k))
+		//			map_node = map_node->right;
+		//		else
+		//			map_node = map_node->left;
+		//	}
+		//	if (map_node && map_node != _end && map_node != _rend &&
+		//		(!_comp(map_node->val.first, k) || !_comp(k, map_node->val.first)))
+		//		return (iterator(map_node));
+		//	else
+		//		return (map::end());
+		//}
 
 		const_iterator find(const key_type &k) const
 		{
-			node *map_node;
+			node *map_node = find_node(_root, k);
 
-			map_node = _root;
-			while (map_node && map_node != _end && map_node != _rend &&
-				   (_comp(map_node->val.first, k) || _comp(k, map_node->val.first)))
-			{
-				if (_comp(map_node->val.first, k))
-					map_node = map_node->right;
-				else
-					map_node = map_node->left;
-			}
-			if (map_node && map_node != _end && map_node != _rend &&
-				(!_comp(map_node->val.first, k) || !_comp(k, map_node->val.first)))
-				return (const_iterator(map_node));
-			else
-				return (map::end());
+			if (!map_node)
+				return (this->end());
+			return (const_iterator(map_node));
 		}
+
+		//const_iterator find(const key_type &k) const
+		//{
+		//	node *map_node;
+
+		//	map_node = _root;
+		//	while (map_node && map_node != _end && map_node != _rend &&
+		//		   (_comp(map_node->val.first, k) || _comp(k, map_node->val.first)))
+		//	{
+		//		if (_comp(map_node->val.first, k))
+		//			map_node = map_node->right;
+		//		else
+		//			map_node = map_node->left;
+		//	}
+		//	if (map_node && map_node != _end && map_node != _rend &&
+		//		(!_comp(map_node->val.first, k) || !_comp(k, map_node->val.first)))
+		//		return (const_iterator(map_node));
+		//	else
+		//		return (map::end());
+		//}
 
 		size_type count(const key_type &k) const
 		{

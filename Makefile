@@ -48,8 +48,7 @@ clean:
 			$(call removing,$(OBJS))
 
 fclean:		clean
-			$(RM) $(NAME) timestamps.txt FT_TESTS STD_TESTS
-
+			$(RM) $(NAME) timestamps.txt
 re:			fclean all
 
 .PHONY: re clean fclean

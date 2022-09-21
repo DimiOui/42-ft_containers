@@ -49,6 +49,10 @@ clean:
 
 fclean:		clean
 			$(RM) $(NAME) timestamps.txt
+
 re:			fclean all
+
+fullclean:	clean
+			$(RM) $(NAME) FT STD FT_TESTS STD_TESTS timestamps.txt
 
 .PHONY: re clean fclean

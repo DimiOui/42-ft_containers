@@ -156,61 +156,34 @@ namespace ft
 		}
 
 		//	MODIFIERS
-		pair<iterator, bool> insert(const value_type &val)
+		pair<iterator, bool> insert_root(const value_type &val)
 		{
-			iterator it;
-			node *map_node;
-			node *new_map_node;
-			node *m_left;
-			node *m_right;
-
 			if (_root == NULL)
 			{
-				try
-				{
-					_root = _tree_alloc.allocate(1);
-					_tree_alloc.construct(_root, node(val));
+				_root = _tree_alloc.allocate(1);
+				_tree_alloc.construct(_root, node(val));
 
-					_root->left = _rend;
-					_root->right = _end;
-					_end->parent = _root;
-					_rend->parent = _root;
-					_size = 1;
+				_root->left = _rend;
+				_root->right = _end;
+				_end->parent = _root;
+				_rend->parent = _root;
+				_size++;
+			}
+			return (ft::make_pair(iterator(_root), true));
+		}
 
-					return (ft::make_pair(iterator(_root), true));
-				}
-				catch (const std::exception &e)
-				{
-					std::cerr << e.what() << '\n';
-				}
-			}
-			it = this->find(val.first);
-			if (it != this->end())
-				return (ft::make_pair(it, false));
-			map_node = _root;
-			while (map_node)
-			{
-				if (map_node->val.first < val.first)
-				{
-					m_right = map_node->right;
-					if (m_right && m_right != _end)
-						map_node = m_right;
-					else
-						break;
-				}
-				else
-				{
-					m_left = map_node->left;
-					if (m_left && m_left != _rend)
-						map_node = m_left;
-					else
-						break;
-				}
-			}
+		node *insert_node(const value_type &val)
+		{
+			node *map_node = _root;
+			node *new_map_node;
+
+			while (map_node->right && map_node->right != _end && _comp(map_node->val.first,val.first))
+				map_node = map_node->right;
+			while (map_node->left && map_node->left != _rend && _comp(val.first, map_node->val.first))
+				map_node = map_node->left;
 			new_map_node = _tree_alloc.allocate(1);
 			_tree_alloc.construct(new_map_node, node(val));
 			new_map_node->parent = map_node;
-
 			if (map_node->val.first < val.first)
 			{
 				new_map_node->right = map_node->right;
@@ -228,7 +201,18 @@ namespace ft
 				map_node->left = new_map_node;
 			}
 			_size++;
-			return (ft::make_pair(new_map_node, true));
+			return (new_map_node);
+		}
+
+		pair<iterator, bool> insert(const value_type &val)
+		{
+			iterator it;
+
+			insert_root(val);
+			it = this->find(val.first);
+			if (it != this->end())
+				return (ft::make_pair(it, false));
+			return (ft::make_pair(insert_node(val), true));
 		}
 
 		iterator insert(iterator position, const value_type &val)
@@ -332,7 +316,7 @@ namespace ft
 
 		size_type erase(const key_type& key)
 		{
-			return find(key) != end() ? (erase(find(key)), true) : false;
+			return (find(key) != end() ? (erase(find(key)), true) : false);
 		}
 
 		void erase(iterator first, iterator last)

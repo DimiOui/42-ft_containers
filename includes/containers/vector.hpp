@@ -87,16 +87,12 @@ namespace ft
 
 		~vector()
 		{
-			if (_capacity)
-			{
 				this->clear();
 				_alloc.deallocate(_data, _capacity);
-			}
 		}
 
 		vector &operator=(const vector &x)
 		{
-			// NOT SURE ABOUT THIS ONE
 			if (this != &x)
 			{
 				try

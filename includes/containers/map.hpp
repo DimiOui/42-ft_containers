@@ -249,25 +249,13 @@ namespace ft
 
 		void erase(iterator position)
 		{
-			node *map_node;
-			node *m_parent;
-			node *m_left;
-			node *m_right;
-			node *next;
+			node *map_node = position.get_node();
+			node *m_parent  = map_node->parent;
+			node *m_left = map_node->left;
+			node *m_right = map_node->right;
+			node *next = map_node->next_node();
 
-			map_node = position.get_node();
-			m_right = map_node->right;
-			m_left = map_node->left;
-			m_parent = map_node->parent;
-			next = map_node->next_node();
-			if (!m_right && !m_left)
-			{
-				if (m_parent->right == map_node)
-					m_parent->right = NULL;
-				else
-					m_parent->left = NULL;
-			}
-			else if (!m_right && m_left)
+			if (!m_right && m_left)
 			{
 				if (m_parent->right == map_node)
 					m_parent->right = m_left;
@@ -283,9 +271,28 @@ namespace ft
 					m_parent->left = m_right;
 				m_right->parent = m_parent;
 			}
+			else if (!m_right && !m_left)
+			{
+				if (m_parent->right == map_node)
+					m_parent->right = NULL;
+				else
+					m_parent->left = NULL;
+			}
 			else
 			{
-				if (next != map_node->right)
+				if (next != map_node->left)
+				{
+					if (!m_parent)
+						_root = next;
+					else if (m_parent->right == map_node)
+						m_parent->right = next;
+					else
+						m_parent->left = next;
+					m_left->parent = next;
+					next->parent = m_parent;
+					next->left = m_left;
+				}
+				else
 				{
 					if (next->right)
 					{
@@ -308,18 +315,6 @@ namespace ft
 					m_left->parent = next;
 					m_right->parent = next;
 				}
-				else
-				{
-					if (!m_parent)
-						_root = next;
-					else if (m_parent->right == map_node)
-						m_parent->right = next;
-					else
-						m_parent->left = next;
-					m_left->parent = next;
-					next->parent = m_parent;
-					next->left = m_left;
-				}
 			}
 			_tree_alloc.destroy(map_node);
 			_tree_alloc.deallocate(map_node, 1);
@@ -335,14 +330,9 @@ namespace ft
 			}
 		}
 
-		size_type erase(const key_type &k)
+		size_type erase(const key_type& key)
 		{
-			iterator it;
-
-			if ((it = this->find(k)) == this->end())
-				return (false);
-			erase(it);
-			return (true);
+			return find(key) != end() ? (erase(find(key)), true) : false;
 		}
 
 		void erase(iterator first, iterator last)
@@ -417,26 +407,6 @@ namespace ft
 			return (iterator(map_node));
 		}
 
-		//iterator find(const key_type &k)
-		//{
-		//	node *map_node;
-
-		//	map_node = _root;
-		//	while (map_node && map_node != _end && map_node != _rend &&
-		//		   (_comp(map_node->val.first, k) || _comp(k, map_node->val.first)))
-		//	{
-		//		if (_comp(map_node->val.first, k))
-		//			map_node = map_node->right;
-		//		else
-		//			map_node = map_node->left;
-		//	}
-		//	if (map_node && map_node != _end && map_node != _rend &&
-		//		(!_comp(map_node->val.first, k) || !_comp(k, map_node->val.first)))
-		//		return (iterator(map_node));
-		//	else
-		//		return (map::end());
-		//}
-
 		const_iterator find(const key_type &k) const
 		{
 			node *map_node = find_node(_root, k);
@@ -445,26 +415,6 @@ namespace ft
 				return (this->end());
 			return (const_iterator(map_node));
 		}
-
-		//const_iterator find(const key_type &k) const
-		//{
-		//	node *map_node;
-
-		//	map_node = _root;
-		//	while (map_node && map_node != _end && map_node != _rend &&
-		//		   (_comp(map_node->val.first, k) || _comp(k, map_node->val.first)))
-		//	{
-		//		if (_comp(map_node->val.first, k))
-		//			map_node = map_node->right;
-		//		else
-		//			map_node = map_node->left;
-		//	}
-		//	if (map_node && map_node != _end && map_node != _rend &&
-		//		(!_comp(map_node->val.first, k) || !_comp(k, map_node->val.first)))
-		//		return (const_iterator(map_node));
-		//	else
-		//		return (map::end());
-		//}
 
 		size_type count(const key_type &k) const
 		{

@@ -21,35 +21,45 @@ namespace ft
 		typedef Reference reference;
 
 		//	MEMBER FUNCTIONS
-		vector_iterator() : _iptr() {}
-		vector_iterator(pointer ptr) : _iptr(ptr) {}
-		vector_iterator(const reference ref) { _iptr = ref.get_pointer(); }
+		vector_iterator() : _base_it() {}
+		vector_iterator(pointer ptr) : _base_it(ptr) {}
+		vector_iterator(const reference ref) { _base_it = ref.get_pointer(); }
 		~vector_iterator() {}
 
-		operator vector_iterator<const T>(void) const
+		operator vector_iterator<const T>() const
 		{
-			return (vector_iterator<const T>(this->_iptr));
+			return (vector_iterator<const T>(this->_base_it));
 		}
 
-		reference operator*() const { return (*_iptr); }
-		vector_iterator operator+(difference_type n) const { return vector_iterator(_iptr + n); }
-		// vector_iterator		operator+ (difference_type n) const
-		//{
-		//	vector_iterator tmp(*this);
-		//	tmp += n;
-		//	return (tmp);
-		// }
+		vector_iterator &operator=(const vector_iterator<const T> &x)
+		{
+			if (this != &x)
+				_base_it = x.get_pointer();
+			return (*this);
+		}
 
-		// friend vector_iterator	operator+ (std::ptrdiff_t n, vector_iterator it)
-		//{
-		//	vector_iterator temp(it.get_pointer());
-		//	temp += n;
-		//	return (temp);
-		// }
+		reference operator*() { return (*_base_it); }
+
+		vector_iterator operator+(difference_type n) const
+		{
+			return vector_iterator(_base_it + n);
+		}
+
+		friend difference_type operator+(vector_iterator x, vector_iterator y)
+		{
+			return (x._base_it + y._base_it);
+		}
+
+		friend vector_iterator	operator+(std::ptrdiff_t n, vector_iterator x)
+		{
+			vector_iterator temp(x.get_pointer());
+			temp += n;
+			return (temp);
+		 }
 
 		vector_iterator &operator++()
 		{
-			_iptr++;
+			_base_it++;
 			return (*this);
 		}
 
@@ -62,21 +72,30 @@ namespace ft
 
 		vector_iterator &operator+=(difference_type n)
 		{
-			_iptr += n;
+			_base_it += n;
 			return (*this);
 		}
 
-		vector_iterator operator-(difference_type n) const { return vector_iterator(_iptr - n); }
-		// vector_iterator operator - (int n) const
-		//{
-		//	vector_iterator tmp(*this);
-		//	tmp -= n;
-		//	return (tmp);
-		// }
+		vector_iterator operator-(difference_type n) const
+		{
+			return vector_iterator(_base_it - n);
+		}
+
+		friend difference_type operator-(vector_iterator x, vector_iterator y)
+		{
+			return (x._base_it - y._base_it);
+		}
+
+		friend vector_iterator	operator-(std::ptrdiff_t n, vector_iterator x)
+		{
+			vector_iterator temp(x.get_pointer());
+			temp -= n;
+			return (temp);
+		}
 
 		vector_iterator &operator--()
 		{
-			_iptr--;
+			_base_it--;
 			return (*this);
 		}
 
@@ -89,55 +108,49 @@ namespace ft
 
 		vector_iterator operator-=(difference_type n)
 		{
-			_iptr -= n;
+			_base_it -= n;
 			return (*this);
 		}
 
-		pointer operator->() const { return (_iptr); }
-		reference operator[](difference_type n) const { return (_iptr[n]); }
+		pointer operator->() { return (_base_it); }
 
-		vector_iterator &operator=(const vector_iterator<const T> &x)
-		{
-			if (this != &x)
-				_iptr = x.get_pointer();
-			return (*this);
-		}
+		reference operator[](difference_type n) const { return (_base_it[n]); }
 
-		pointer get_pointer() const { return (_iptr); }
+		pointer get_pointer() const { return (_base_it); }
 
 		//	COMPARISON
 		bool operator==(const vector_iterator<const T> &x) const
 		{
-			return (_iptr == x.get_pointer());
+			return (_base_it == x.get_pointer());
 		}
 
 		bool operator!=(const vector_iterator<const T> &x) const
 		{
-			return (_iptr != x.get_pointer());
+			return (_base_it != x.get_pointer());
 		}
 
 		bool operator>(const vector_iterator<const T> &x) const
 		{
-			return (_iptr > x.get_pointer());
+			return (_base_it > x.get_pointer());
 		}
 
 		bool operator>=(const vector_iterator<const T> &x) const
 		{
-			return (_iptr >= x.get_pointer());
+			return (_base_it >= x.get_pointer());
 		}
 
 		bool operator<(const vector_iterator<const T> &x) const
 		{
-			return (_iptr < x.get_pointer());
+			return (_base_it < x.get_pointer());
 		}
 
 		bool operator<=(const vector_iterator<const T> &x) const
 		{
-			return (_iptr <= x.get_pointer());
+			return (_base_it <= x.get_pointer());
 		}
 
 	protected:
-		pointer _iptr;
+		pointer _base_it;
 	};
 }
 

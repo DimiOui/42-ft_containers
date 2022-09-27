@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include "../iterators/vector_iterator.hpp"
+#include "../iterators/reverse_iterator.hpp"
 #include "../utils/enable_if.hpp"
 #include "../utils/equal.hpp"
 #include "../utils/is_integral.hpp"
@@ -185,7 +186,7 @@ namespace ft
 		reference operator[](size_type n) { return (_data[n]); }
 		const_reference operator[](size_type n) const { return (_data[n]); }
 		reference front() { return (_data[0]); }
-		const_reference front() const { return (_data); }
+		const_reference front() const { return (_data[0]); }
 		reference back() { return (_data[_size - 1]); }
 		const_reference back() const { return (_data[_size - 1]); }
 

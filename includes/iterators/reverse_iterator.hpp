@@ -101,7 +101,7 @@ namespace ft
 		iterator_type _base_it;
 	};
 
-	//NON-MEMBER OPERATOR OVERLOADS
+	//NON-MEMBER COMPARISON OPERATORS
 	template <class Iterator>
 	reverse_iterator<Iterator> operator+(
 		typename reverse_iterator<Iterator>::difference_type n,

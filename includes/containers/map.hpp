@@ -179,12 +179,6 @@ namespace ft
 		{
 			node *new_map_node;
 			node *map_node = _root;
-
-
-			//while (map_node && _comp(map_node->val.first, val.first) && map_node->right && map_node->right != _end)
-			//	map_node = map_node->right;
-			//while (map_node && _comp(val.first, map_node->val.first) && map_node->left && map_node->left != _rend)
-			//	map_node = map_node->left;
 			while (map_node->right || map_node->left)
 			{
 				if (_comp(map_node->val.first, val.first))
@@ -192,14 +186,14 @@ namespace ft
 					if (map_node->right && map_node->right != _end)
 						map_node = map_node->right;
 					else
-						break ;
+						break;
 				}
 				else
 				{
 					if (map_node->left && map_node->left != _rend)
 						map_node = map_node->left;
 					else
-						break ;
+						break;
 				}
 			}
 			new_map_node = _tree_alloc.allocate(1);
@@ -208,16 +202,16 @@ namespace ft
 			if (_comp(map_node->val.first, val.first))
 			{
 				new_map_node->right = map_node->right;
-                if (new_map_node->right)
-				    new_map_node->right->parent = new_map_node;
+				if (new_map_node->right)
+					new_map_node->right->parent = new_map_node;
 				new_map_node->left = NULL;
 				map_node->right = new_map_node;
 			}
 			else
 			{
 				new_map_node->left = map_node->left;
-                if (new_map_node->left)
-				    new_map_node->left->parent = new_map_node;
+				if (new_map_node->left)
+					new_map_node->left->parent = new_map_node;
 				new_map_node->right = NULL;
 				map_node->left = new_map_node;
 			}
@@ -225,9 +219,9 @@ namespace ft
 			return (new_map_node);
 		}
 
-		pair<iterator, bool> insert (const value_type &val)
+		pair<iterator, bool> insert(const value_type &val)
 		{
-			iterator	it;
+			iterator it;
 
 			if (insert_root(val) == true)
 				return (ft::make_pair(iterator(_root), true));
@@ -253,108 +247,15 @@ namespace ft
 			}
 		}
 
-		//void erase(iterator position)
-		//{
-		//	node *map_node = position.get_node();
-		//	node *m_parent  = map_node->parent;
-		//	node *m_left = map_node->left;
-		//	node *m_right = map_node->right;
-		//	node *next = map_node->next_node();
-
-		//	if (!m_right && m_left)
-		//	{
-		//		if (m_parent->right == map_node)
-		//			m_parent->right = m_left;
-		//		else
-		//			m_parent->left = m_left;
-		//		m_left->parent = m_parent;
-		//	}
-		//	else if (m_right && !m_left)
-		//	{
-		//		if (m_parent->right == map_node)
-		//			m_parent->right = m_right;
-		//		else
-		//			m_parent->left = m_right;
-		//		m_right->parent = m_parent;
-		//	}
-		//	else if (!m_right && !m_left)
-		//	{
-		//		if (m_parent->right == map_node)
-		//			m_parent->right = NULL;
-		//		else
-		//			m_parent->left = NULL;
-		//	}
-		//	else
-		//	{
-		//		if (next != map_node->left)
-		//		{
-		//			if (!m_parent)
-		//				_root = next;
-		//			else if (m_parent->right == map_node)
-		//				m_parent->right = next;
-		//			else
-		//				m_parent->left = next;
-		//			m_left->parent = next;
-		//			next->parent = m_parent;
-		//			next->left = m_left;
-		//		}
-		//		else
-		//		{
-		//			if (next->right)
-		//			{
-		//				next->parent->left = next->right;
-		//				next->right->parent = next->parent;
-		//			}
-		//			if (!m_parent)
-		//				_root = next;
-		//			else if (m_parent->right == map_node)
-		//				m_parent->right = next;
-		//			else
-		//				m_parent->left = next;
-		//			if (next->parent->right == next)
-		//				next->parent->right = NULL;
-		//			else
-		//				next->parent->left = NULL;
-		//			next->parent = m_parent;
-		//			next->right = m_right;
-		//			next->left = m_left;
-		//			m_left->parent = next;
-		//			m_right->parent = next;
-		//		}
-		//	}
-		//	_tree_alloc.destroy(map_node);
-		//	_tree_alloc.deallocate(map_node, 1);
-		//	_size--;
-		//	if (_size == 0)
-		//	{
-		//		_root = NULL;
-		//		_rend->right = NULL;
-		//		_rend->left = NULL;
-		//		_end->right = NULL;
-		//		_end->left = NULL;
-		//		_rend->parent = _end;
-		//	}
-		//}
-
-		void erase (iterator position)
+		bool erase_child(node *map_node, node *right, node *left, node *parent)
 		{
-			node	*map_node;
-			node	*right;
-			node	*left;
-			node	*parent;
-            node    *next;
-
-			map_node = position.get_node();
-			right = map_node->right;
-			left = map_node->left;
-			parent = map_node->parent;
-            next = map_node->next_node();
 			if (!right && !left)
 			{
 				if (parent->right == map_node)
 					parent->right = NULL;
 				else
 					parent->left = NULL;
+				return (true);
 			}
 			else if (!right && left)
 			{
@@ -363,6 +264,7 @@ namespace ft
 				else
 					parent->left = left;
 				left->parent = parent;
+				return (true);
 			}
 			else if (right && !left)
 			{
@@ -371,45 +273,60 @@ namespace ft
 				else
 					parent->left = right;
 				right->parent = parent;
+				return (true);
+			}
+			return (false);
+		}
+
+		void erase_next(node *map_node, node *right, node *left, node *parent, node *next)
+		{
+			if (next != map_node->right)
+			{
+				if (next->right)
+				{
+					next->parent->left = next->right;
+					next->right->parent = next->parent;
+				}
+				if (!parent)
+					_root = next;
+				else if (parent->right == map_node)
+					parent->right = next;
+				else
+					parent->left = next;
+				if (next->parent->right == next)
+					next->parent->right = NULL;
+				else
+					next->parent->left = NULL;
+				next->parent = parent;
+				next->right = right;
+				next->left = left;
+				left->parent = next;
+				right->parent = next;
 			}
 			else
 			{
-				if (next != map_node->right)
-				{
-					if (next->right)
-					{
-						next->parent->left = next->right;
-						next->right->parent = next->parent;
-					}
-					if (!parent)
-						_root = next;
-					else if (parent->right == map_node)
-						parent->right = next;
-					else
-						parent->left = next;
-                    if (next->parent->right == next)
-                        next->parent->right = NULL;
-                    else
-                        next->parent->left = NULL;
-					next->parent = parent;
-					next->right = right;
-					next->left = left;
-					left->parent = next;
-					right->parent = next;
-				}
+				if (!parent)
+					_root = next;
+				else if (parent->right == map_node)
+					parent->right = next;
 				else
-				{
-					if (!parent)
-						_root = next;
-					else if (parent->right == map_node)
-						parent->right = next;
-					else
-						parent->left = next;
-					left->parent = next;
-					next->parent = parent;
-					next->left = left;
-				}
+					parent->left = next;
+				left->parent = next;
+				next->parent = parent;
+				next->left = left;
 			}
+		}
+
+		void erase(iterator position)
+		{
+			node *map_node = position.get_node();
+			node *right = map_node->right;
+			node *left = map_node->left;
+			node *parent = map_node->parent;
+			node *next = map_node->next_node();
+
+			if (erase_child(map_node, right, left, parent) == false)
+				erase_next(map_node, right, left, parent, next);
 			_tree_alloc.destroy(map_node);
 			_tree_alloc.deallocate(map_node, 1);
 			_size--;
@@ -424,7 +341,7 @@ namespace ft
 			}
 		}
 
-		size_type erase(const key_type& key)
+		size_type erase(const key_type &key)
 		{
 			return (find(key) != end() ? (erase(find(key)), true) : false);
 		}
@@ -640,5 +557,5 @@ namespace ft
 //	https://legacy.cplusplus.com/reference/map/map/
 //	https://algorithmtutor.com/Data-Structures/Tree/Binary-Search-Trees/
 //	https://www.geeksforgeeks.org/binary-search-tree-set-1-search-and-insertion/
-#endif
 
+#endif

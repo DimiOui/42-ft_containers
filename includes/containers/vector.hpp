@@ -98,7 +98,7 @@ namespace ft
 			{
 				try
 				{
-					this->clear();
+					clear();
 					_alloc.deallocate(_data, _capacity);
 					_capacity = x._capacity;
 					_size = x._size;
@@ -138,7 +138,6 @@ namespace ft
 
 		void resize(size_type n, value_type val = value_type())
 		{
-			// Not sure about this one either
 			while (n < _size)
 				this->pop_back();
 			if (n > _size)
@@ -228,38 +227,39 @@ namespace ft
 		{
 			try
 			{
-				this->clear();
+				clear();
+				for (size_type i = 0; i < n; i++)
+					push_back(val);
 			}
 			catch (const std::exception &e)
 			{
 				std::cerr << e.what() << '\n';
 			}
-			for (size_type i = 0; i < n; i++)
-				push_back(val);
 		}
 
 		void push_back(const_reference val)
 		{
-			if (_capacity < _size + 1)
+			if (_capacity < _size + 1 && _size != 0)
 			{
-				if (_size == 0)
-					try
-					{
-						this->reserve(1);
-					}
-					catch (std::exception &e)
-					{
-						std::cerr << e.what() << '\n';
-					}
-				else
-					try
-					{
-						this->reserve(_size * 2);
-					}
-					catch (std::exception &e)
-					{
-						std::cerr << e.what() << '\n';
-					}
+				try
+				{
+					this->reserve(_size * 2);
+				}
+				catch (std::exception &e)
+				{
+					std::cerr << e.what() << '\n';
+				}
+			}
+			else if (_size == 0)
+			{
+				try
+				{
+					this->reserve(1);
+				}
+				catch (std::exception &e)
+				{
+					std::cerr << e.what() << '\n';
+				}
 			}
 			_alloc.construct(&_data[_size], val);
 			_size++;

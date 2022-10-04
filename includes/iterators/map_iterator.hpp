@@ -21,11 +21,11 @@ namespace ft
 
 		// MEMBER FUNCTIONS
 		map_iterator() : _current_node() {}
-		map_iterator(T *ptr) : _current_node(ptr) {}
+		map_iterator(tree_node* ptr) : _current_node(ptr) {}
 		map_iterator(const map_iterator &x) { *this = x; }
 		~map_iterator() {}
 
-		reference operator*() const { return _current_node->val; }
+		reference operator*() const { return (*static_cast<pointer>(_current_node->val)); }
 
 		map_iterator &operator++()
 		{
@@ -35,8 +35,8 @@ namespace ft
 
 		map_iterator operator++(int)
 		{
-			map_iterator temp = *this;
-			_current_node = _current_node->next_node();
+			map_iterator temp(*this);
+			++(*this);
 			return (temp);
 		}
 
@@ -48,14 +48,14 @@ namespace ft
 
 		map_iterator operator--(int)
 		{
-			map_iterator temp = *this;
-			_current_node = _current_node->prev_node();
+			map_iterator temp(*this);
+			--(*this);
 			return (temp);
 		}
 
 		pointer operator->() const
 		{
-			return (&_current_node->val);
+			return (static_cast<pointer>(_current_node->val));
 		}
 
 		map_iterator &operator=(const map_iterator &x)
@@ -65,7 +65,7 @@ namespace ft
 			return (*this);
 		}
 
-		T *get_node() const { return (_current_node); }
+		tree_node *get_node() const { return (_current_node); }
 
 		// COMPARISON
 		bool operator==(const map_iterator &x) const
@@ -79,7 +79,7 @@ namespace ft
 		}
 
 	protected:
-		T *_current_node;
+		tree_node *_current_node;
 	};
 
 	template <class T, class U, class map_iterator, class Category = std::bidirectional_iterator_tag,
@@ -97,12 +97,12 @@ namespace ft
 	public:
 		//	MEMBER FUNCTIONS
 		const_map_iterator() : _current_node() {}
-		const_map_iterator(T *ptr) : _current_node(ptr) {}
+		const_map_iterator(tree_node *ptr) : _current_node(ptr) {}
 		const_map_iterator(const const_map_iterator &x) { *this = x; }
 		const_map_iterator(const map_iterator &x) { _current_node = x.get_node(); }
 		~const_map_iterator() {}
 
-		const reference operator*() const { return (_current_node->val); }
+		const reference operator*() const { return (*static_cast<pointer>(_current_node->val)); }
 
 		const_map_iterator &operator++()
 		{
@@ -112,8 +112,8 @@ namespace ft
 
 		const_map_iterator operator++(int)
 		{
-			const_map_iterator temp = *this;
-			_current_node = _current_node->next_node();
+			const_map_iterator temp(*this);
+			++(*this);
 			return (temp);
 		}
 
@@ -125,14 +125,14 @@ namespace ft
 
 		const_map_iterator operator--(int)
 		{
-			const_map_iterator temp = *this;
-			_current_node = _current_node->prev_node();
+			const_map_iterator temp(*this);
+			--(*this);
 			return (temp);
 		}
 
 		const pointer operator->() const
 		{
-			return (&_current_node->val);
+			return (static_cast<pointer>(_current_node->val));
 		}
 
 		const_map_iterator &operator=(const const_map_iterator &x)
@@ -142,24 +142,22 @@ namespace ft
 			return (*this);
 		}
 
-		T *get_node() const { return (_current_node); }
+		const tree_node* get_node() const { return (_current_node); }
 
 		//	COMPARISON
 		bool operator==(const const_map_iterator &x) const
 		{
-			return _current_node == x._current_node;
+			return (_current_node == x._current_node);
 		}
 
 		bool operator!=(const const_map_iterator &x) const
 		{
-			return _current_node != x._current_node;
+			return (_current_node != x._current_node);
 		}
 
 	protected:
-		T *_current_node;
+		tree_node *_current_node;
 	};
 }
-
-//	https://legacy.cplusplus.com/reference/iterator/iterator/
 
 #endif

@@ -6,82 +6,91 @@
 #include <cstdlib>
 #include "pair.hpp"
 
+
 namespace ft
 {
-
-	template <class Pair>
-	struct binary_tree
+	struct tree_node
 	{
-		struct binary_tree *parent;
-		struct binary_tree *left;
-		struct binary_tree *right;
-		Pair val;
+		struct tree_node *parent;
+		struct tree_node *left;
+		struct tree_node *right;
+		std::size_t color;
+		void* val;
 
-		explicit binary_tree() : parent(NULL), left(NULL), right(NULL), val() {}
-		explicit binary_tree(const Pair &value) : parent(NULL), left(NULL), right(NULL),
-												  val(value) {}
-		binary_tree(const binary_tree &x) : parent(x.parent), left(x.left),
-											right(x.right), val(x.val) {}
-		~binary_tree() {}
+		explicit tree_node() : parent(NULL), left(NULL), right(NULL), color(0), val(NULL) {}
+		tree_node(const tree_node &x) : parent(x.parent), left(x.left),
+											right(x.right), color(x.color), val(x.val) {}
+		~tree_node() {}
 
-		binary_tree &operator=(const binary_tree &x)
+		tree_node &operator=(const tree_node &x)
 		{
 			if (this != &x)
 			{
 				parent = x.parent;
 				left = x.left;
 				right = x.right;
+				color = x.color;
 				val = x.val;
 			}
 			return (*this);
 		}
 
-		binary_tree *min_node(binary_tree *node)
+		tree_node *min_tree_node(tree_node *node, tree_node *prev)
 		{
-			if (!node)
-				return (NULL);
-			while (node->left)
-				node = node->left;
+			if (node->val != NULL && prev->val != NULL)
+				while (node->left)
+					node = node->left;
 			return (node);
 		}
 
-		binary_tree *max_node(binary_tree *node)
+		tree_node *max_tree_node(tree_node *node, tree_node *prev)
 		{
-			if (!node)
-				return (NULL);
-			while (node->right)
-				node = node->right;
+			if (node->val != NULL && prev->val != NULL)
+				while (node->right)
+					node = node->right;
 			return (node);
 		}
 
-		binary_tree *next_node()
+		tree_node *next_node()
 		{
-			binary_tree *temp = this;
-			binary_tree *temp_parent = temp->parent;
+			tree_node *temp = this;
+			tree_node *prev;
 
 			if (temp->right)
-				return (min_node(temp->right));
-			while (temp_parent && temp == temp_parent->right)
 			{
-				temp = temp_parent;
-				temp_parent = temp_parent->parent;
+				prev = temp;
+				temp = temp->right;
+				temp = temp->min_tree_node(temp, prev);
 			}
-			return (temp_parent);
+			else
+			{
+				while (temp->parent
+						&& temp == temp->parent->right)
+					temp = temp->parent;
+				temp = temp->parent;
+			}
+			return(temp);
 		}
 
-		binary_tree *prev_node()
+		tree_node *prev_node()
 		{
-			binary_tree *temp = this;
-			binary_tree *temp_parent = temp->parent;
+			tree_node *temp = this;
+			tree_node *prev;
 
 			if (temp->left)
-				return (max_node(temp->left));
-			while (temp_parent && temp == temp->left)
 			{
-				temp = temp_parent;
-				temp_parent = temp_parent->parent;
+				prev = temp;
+				temp = temp->left;
+				temp = temp->max_tree_node(temp, prev);
 			}
-			return (temp_parent);
+			else
+			{
+				while (temp->parent
+						&& temp == temp->parent->left)
+					temp = temp->parent;
+				temp = temp->parent;
+			}
+			return (temp);
 		}
 	};
 }

@@ -44,7 +44,8 @@ public:
 	iterator end() { return this->c.end(); }
 };
 
-int main(int argc, char** argv) {
+int main(int argc, char** argv)
+{
 	if (argc != 2)
 	{
 		std::cerr << "Usage: ./test seed" << std::endl;

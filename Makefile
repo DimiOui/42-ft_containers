@@ -8,7 +8,7 @@ define removing
 	@$(RM) $1 > /dev/null
 endef
 
-SRCS		=	srcs/main.cpp
+SRCS		=	srcs/main_42.cpp
 
 OBJS		= $(SRCS:.cpp=.o)
 

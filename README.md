@@ -31,7 +31,7 @@ To use the ft_containers in your own project, follow these steps:
 3. Compile your code along with the container source files.
 Here's an example of how to use the vector container:
 
-```
+```c++
 #include "includes/vector.hpp"
 
 int main() {
